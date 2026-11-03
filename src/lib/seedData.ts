@@ -41,9 +41,9 @@ export const INITIAL_ACCOUNTS: Account[] = [
     tiktok_id: '7483920192837465192',
     avatar_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
     status: 'active',
-    last_sync_at: null, // Untracked / empty state to showcase zero-data state!
+    last_sync_at: '2026-11-03T01:15:00Z', // 08:15 WIB
     created_at: '2026-10-20T00:00:00Z',
-    updated_at: '2026-10-20T00:00:00Z',
+    updated_at: '2026-11-03T01:15:00Z',
   },
   {
     id: 'a5555555-5555-5555-5555-555555555555',
@@ -69,8 +69,9 @@ export const INITIAL_ACCOUNTS: Account[] = [
   },
 ];
 
-// Snapshots for Intan Suar Kartika
-export const INTAN_SNAPSHOTS: AccountSnapshot[] = [
+// Profile Snapshots for all 6 accounts
+export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
+  // 1. Intan Suar Kartika
   {
     id: 'snap-intan-1',
     account_id: 'a1111111-1111-1111-1111-111111111111',
@@ -111,15 +112,13 @@ export const INTAN_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-intan-5',
     account_id: 'a1111111-1111-1111-1111-111111111111',
     sync_job_id: 'job-intan-5',
-    fans: 255250, // +1,450 followers in 23h45m
+    fans: 255250, // +1,450 fans
     heart: 4280500,
     video_count: 318,
     captured_at: '2026-11-03T01:45:00Z',
   },
-];
 
-// Snapshots for Rania Meutia
-export const RANIA_SNAPSHOTS: AccountSnapshot[] = [
+  // 2. Rania Meutia
   {
     id: 'snap-rania-1',
     account_id: 'a2222222-2222-2222-2222-222222222222',
@@ -133,15 +132,13 @@ export const RANIA_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-rania-2',
     account_id: 'a2222222-2222-2222-2222-222222222222',
     sync_job_id: 'job-rania-2',
-    fans: 186200,
+    fans: 186200, // +2,200 fans
     heart: 3254000,
     video_count: 242,
     captured_at: '2026-11-02T14:30:00Z',
   },
-];
 
-// Snapshots for Nara Adelia
-export const NARA_SNAPSHOTS: AccountSnapshot[] = [
+  // 3. Nara Adelia
   {
     id: 'snap-nara-1',
     account_id: 'a3333333-3333-3333-3333-333333333333',
@@ -155,15 +152,33 @@ export const NARA_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-nara-2',
     account_id: 'a3333333-3333-3333-3333-333333333333',
     sync_job_id: 'job-nara-2',
-    fans: 99850,
+    fans: 99850, // +1,450 fans
     heart: 1925000,
     video_count: 182,
     captured_at: '2026-11-02T03:15:00Z',
   },
-];
 
-// Snapshots for Aqara Indonesia
-export const AQARA_SNAPSHOTS: AccountSnapshot[] = [
+  // 4. Dinda Kemala
+  {
+    id: 'snap-dinda-1',
+    account_id: 'a4444444-4444-4444-4444-444444444444',
+    sync_job_id: 'job-dinda-1',
+    fans: 142100,
+    heart: 2890000,
+    video_count: 215,
+    captured_at: '2026-11-01T03:00:00Z',
+  },
+  {
+    id: 'snap-dinda-2',
+    account_id: 'a4444444-4444-4444-4444-444444444444',
+    sync_job_id: 'job-dinda-2',
+    fans: 143500, // +1,400 fans
+    heart: 2940000,
+    video_count: 217,
+    captured_at: '2026-11-03T01:15:00Z',
+  },
+
+  // 5. Aqara Indonesia
   {
     id: 'snap-aqara-1',
     account_id: 'a5555555-5555-5555-5555-555555555555',
@@ -182,10 +197,8 @@ export const AQARA_SNAPSHOTS: AccountSnapshot[] = [
     video_count: 145,
     captured_at: '2026-11-03T02:10:00Z',
   },
-];
 
-// Snapshots for The AI X Academy
-export const AI_ACADEMY_SNAPSHOTS: AccountSnapshot[] = [
+  // 6. The AI X Academy
   {
     id: 'snap-ai-1',
     account_id: 'a6666666-6666-6666-6666-666666666666',
@@ -206,561 +219,208 @@ export const AI_ACADEMY_SNAPSHOTS: AccountSnapshot[] = [
   },
 ];
 
-// 10 Monitored Posts for Intan Suar Kartika
-export const INTAN_POSTS: Post[] = [
-  {
-    id: '7432891028391823741',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Tutorial makeup natural glowing buat daily hangout ✨ Spill shade di kolom komentar ya!',
-    create_time_iso: '2026-11-02T12:00:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7432891028391823741',
-    is_slideshow: false,
-    is_pinned: true,
-    cover_url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-11-02T12:00:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7432746192847291832',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Foto OOTD aesthetic musim hujan 🌧️ slide favorit kamu yang ke berapa?',
-    create_time_iso: '2026-11-01T09:30:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7432746192847291832',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-11-01T09:30:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7432394857192847583',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'A day in my life: shooting konten seharian di studio baru 🎬 Capek tapi seru banget!',
-    create_time_iso: '2026-10-31T14:15:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7432394857192847583',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-31T14:15:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7431982736452819204',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Rekomendasi serum brightening yang ga bikin breakout di kulit sensitif 🫧 #skincare',
-    create_time_iso: '2026-10-30T10:00:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7431982736452819204',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-30T10:00:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7431562948271938475',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Ide pose foto di coffee shop biar kelihatan candid dan natural 📸 Jangan lupa save!',
-    create_time_iso: '2026-10-29T08:45:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7431562948271938475',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-29T08:45:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7431182746281938476',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Unboxing PR package skincare viral minggu ini! Honest review ya no endorse 🤍',
-    create_time_iso: '2026-10-28T11:20:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7431182746281938476',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-28T11:20:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7430829182736451927',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Morning routine produktif sebelum jam 9 pagi ☕️ Stretching & journaling dulu.',
-    create_time_iso: '2026-10-27T01:30:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7430829182736451927',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-27T01:30:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7430482910293847568',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Koleksi parfum aroma vanila & warm floral yang tahan 12 jam di kulit 🌸 #fragrance',
-    create_time_iso: '2026-10-26T13:10:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7430482910293847568',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-26T13:10:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7430182746192847569',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'GRWM menghadiri event beauty awards bareng teman-teman creator ✨',
-    create_time_iso: '2026-10-25T15:40:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7430182746192847569',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-25T15:40:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: '7429819284719283740',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    caption: 'Q&A tips konsisten bikin konten bagi pemula: mulai dari smartphone aja dulu!',
-    create_time_iso: '2026-10-24T10:15:00Z',
-    web_video_url: 'https://www.tiktok.com/@intansuarkartika/video/7429819284719283740',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1616469829941-c7200edec809?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-24T10:15:00Z',
-    updated_at: '2026-11-03T01:45:00Z',
-  },
+// Helper to generate 10 posts per account
+function generateAccountPosts(
+  accountId: string,
+  username: string,
+  prefix: string,
+  baseViews: number,
+  captions: Array<{ text: string; isSlideshow: boolean }>
+): { posts: Post[]; snapshots: PostSnapshot[] } {
+  const posts: Post[] = [];
+  const snapshots: PostSnapshot[] = [];
+
+  captions.slice(0, 10).forEach((item, index) => {
+    const postId = `${prefix}${index + 1}`;
+    const hoursAgo = (index + 1) * 14;
+    const createTime = new Date(Date.now() - hoursAgo * 3600000).toISOString();
+
+    posts.push({
+      id: postId,
+      account_id: accountId,
+      caption: item.text,
+      create_time_iso: createTime,
+      web_video_url: `https://www.tiktok.com/@${username}/video/${postId}`,
+      is_slideshow: item.isSlideshow,
+      is_pinned: index === 0,
+      cover_url: `https://images.unsplash.com/photo-${1510000000000 + (index + 1) * 314159}?w=400&auto=format&fit=crop&q=80`,
+      created_at: createTime,
+      updated_at: createTime,
+    });
+
+    const play = Math.round(baseViews * (1.2 - index * 0.08) + (index % 3 === 0 ? baseViews * 0.4 : 0));
+    const digg = Math.round(play * (0.07 + (index % 4) * 0.01));
+    const comment = Math.round(digg * 0.05);
+    const share = Math.round(digg * 0.09);
+
+    // Current snapshot
+    snapshots.push({
+      id: `ps-${postId}-cur`,
+      post_id: postId,
+      sync_job_id: `job-${prefix}-cur`,
+      play_count: play,
+      digg_count: digg,
+      comment_count: comment,
+      share_count: share,
+      captured_at: new Date().toISOString(),
+    });
+
+    // Previous snapshot for first 5 posts
+    if (index < 5) {
+      const prevPlay = Math.round(play * 0.85);
+      snapshots.push({
+        id: `ps-${postId}-prev`,
+        post_id: postId,
+        sync_job_id: `job-${prefix}-prev`,
+        play_count: prevPlay,
+        digg_count: Math.round(digg * 0.85),
+        comment_count: Math.round(comment * 0.85),
+        share_count: Math.round(share * 0.85),
+        captured_at: new Date(Date.now() - 86400000).toISOString(),
+      });
+    }
+  });
+
+  return { posts, snapshots };
+}
+
+// 1. Intan Captions
+const INTAN_DATA = generateAccountPosts(
+  'a1111111-1111-1111-1111-111111111111',
+  'intansuarkartika',
+  '743289',
+  280000,
+  [
+    { text: 'Tutorial makeup natural glowing buat daily hangout ✨ Spill shade di kolom komentar!', isSlideshow: false },
+    { text: 'Foto OOTD aesthetic musim hujan 🌧️ slide favorit kamu yang ke berapa?', isSlideshow: true },
+    { text: 'A day in my life: shooting konten seharian di studio baru 🎬', isSlideshow: false },
+    { text: 'Rekomendasi serum brightening yang ga bikin breakout di kulit sensitif 🫧 #skincare', isSlideshow: false },
+    { text: 'Ide pose foto di coffee shop biar kelihatan candid dan natural 📸', isSlideshow: true },
+    { text: 'Unboxing PR package skincare viral minggu ini! Honest review ya no endorse 🤍', isSlideshow: false },
+    { text: 'Morning routine produktif sebelum jam 9 pagi ☕️ Stretching & journaling dulu.', isSlideshow: false },
+    { text: 'Koleksi parfum aroma vanila & warm floral yang tahan 12 jam di kulit 🌸', isSlideshow: true },
+    { text: 'GRWM menghadiri event beauty awards bareng teman-teman creator ✨', isSlideshow: false },
+    { text: 'Q&A tips konsisten bikin konten bagi pemula: mulai dari smartphone aja dulu!', isSlideshow: false },
+  ]
+);
+
+// 2. Rania Captions
+const RANIA_DATA = generateAccountPosts(
+  'a2222222-2222-2222-2222-222222222222',
+  'rania.meutia',
+  '728394',
+  210000,
+  [
+    { text: 'Mix & match blazer oversize buat ngantor vs hangout 💼 #OOTD #hijabstyle', isSlideshow: false },
+    { text: '5 Outfit ideas warna earth tone buat weekend getaway 🍂', isSlideshow: true },
+    { text: 'Review honest tas lokal brand yang muat banyak & tahan air ✨', isSlideshow: false },
+    { text: 'Tips styling celana kulot biar kelihatan lebih jenjang 📏', isSlideshow: true },
+    { text: 'Get ready with me: attending Jakarta Fashion Week 👠', isSlideshow: false },
+    { text: 'Rekomendasi sepatu loafers ternyaman buat jalan seharian 👞', isSlideshow: true },
+    { text: 'Unboxing haul modest wear edisi musim hujan 🌧️', isSlideshow: false },
+    { text: 'Capsule wardrobe 101: 7 item baju untuk 14 looks berbeda 👗', isSlideshow: true },
+    { text: 'A day in my life: fitting baju bareng stylist & photoshoot 📸', isSlideshow: false },
+    { text: 'Q&A tips pilih tone warna hijab yang bikin wajah cerah 🧕', isSlideshow: false },
+  ]
+);
+
+// 3. Nara Captions
+const NARA_DATA = generateAccountPosts(
+  'a3333333-3333-3333-3333-333333333333',
+  'nara.adelia_',
+  '739485',
+  160000,
+  [
+    { text: 'Step by step double cleansing yang bener biar pori-pori bersih tuntas 🫧 #skincare', isSlideshow: false },
+    { text: 'Perbedaan physical vs chemical sunscreen: mana yang cocok buat kamu? ☀️', isSlideshow: true },
+    { text: 'Kandungan skincare yang gaboleh di-layer bersamaan! Catat ya ⚠️', isSlideshow: true },
+    { text: 'Review cushion viral dengan satin finish: tahan 8 jam tanpa touch-up? 🤔', isSlideshow: false },
+    { text: 'Morning routine mengatasi kulit kemerahan dan skin barrier rusak 🌿', isSlideshow: false },
+    { text: 'Swatches 6 shade liptint lokal paling flattering di undertone warm 💄', isSlideshow: true },
+    { text: 'Tips eksfoliasi untuk pemula tanpa bikin kulit iritasi / purging 🧖‍♀️', isSlideshow: false },
+    { text: 'Battle eye cream penghilang mata panda: hasilnya setelah 2 minggu 👁️', isSlideshow: true },
+    { text: 'Skincare empties bulan ini: mana yang bakal repurchase? 🗑️', isSlideshow: false },
+    { text: 'Budget skincare routine di bawah 200 ribu untuk pelajar/mahasiswa 💸', isSlideshow: false },
+  ]
+);
+
+// 4. Dinda Captions
+const DINDA_DATA = generateAccountPosts(
+  'a4444444-4444-4444-4444-444444444444',
+  'dinda.kemala_',
+  '748392',
+  190000,
+  [
+    { text: 'Explore hidden gem cafe estetik di Bandung yang punya view pegunungan ⛰️ #kuliner', isSlideshow: false },
+    { text: 'Photospot gratis di Jakarta yang vibesnya kayak di luar negeri 🏙️', isSlideshow: true },
+    { text: 'Vlog seharian kulineran malam di Pasar Baru: habis berapa ya? 🍜', isSlideshow: false },
+    { text: 'Packing tips koper cabin size muat baju buat trip 5 hari 🧳', isSlideshow: true },
+    { text: 'Solo travel pertama ke Jogja: itinerary lengkap & estimasi budget 🚂', isSlideshow: false },
+    { text: 'Rekomendasi tempat ngopi cozy buat nugas & WFC di Jaksel ☕', isSlideshow: true },
+    { text: 'Weekend photo dump: hunting sunset di pantai pasir putih 🌅', isSlideshow: true },
+    { text: 'Review staycation di glamping aesthetic: worth it ga ya? ⛺', isSlideshow: false },
+    { text: 'Tutorial bikin video cinematic travel hanya bermodalkan HP 📱', isSlideshow: false },
+    { text: 'Hal-hal yang wajib kamu perhatikan sebelum liburan naik kereta sleeper 🚆', isSlideshow: false },
+  ]
+);
+
+// 5. Aqara Captions
+const AQARA_DATA = generateAccountPosts(
+  'a5555555-5555-5555-5555-555555555555',
+  'aqara.indonesia',
+  '755100',
+  110000,
+  [
+    { text: 'Smart Door Lock U100 dengan Apple HomeKit & fingerprint unlock 🔑 #smarthome', isSlideshow: false },
+    { text: 'Cara bikin lampu otomatis nyala pas kamu masuk ruangan pakai FP2 Presence Sensor 💡', isSlideshow: true },
+    { text: 'Unboxing Camera Hub G3: Smart camera dengan AI gesture recognition & pan-tilt 🎥', isSlideshow: false },
+    { text: 'Setup sensor kebocoran air Water Leak Sensor biar rumah ga banjir saat liburan 🚰', isSlideshow: false },
+    { text: 'Otomasi tirai jendela Smart Curtain Driver E1: bangun pagi auto terang ✨ #tipsrumah', isSlideshow: true },
+    { text: 'Bikin bioskop pribadi di kamar: lampu redup otomatis saat proyektor nyala 🎬', isSlideshow: false },
+    { text: 'Kenapa smart switch Aqara lebih aman daripada saklar pintar abal-abal? ⚡️', isSlideshow: true },
+    { text: 'Smart Pet Feeder C1: kasih makan kucing otomatis terjadwal dari smartphone 🐱', isSlideshow: false },
+    { text: 'Otomasi AC mati sendiri saat jendela terbuka pakai Door & Window Sensor ❄️', isSlideshow: true },
+    { text: 'Panduan setup Zigbee Hub M2 untuk pemula: mudah dan tanpa pusing 🔌', isSlideshow: false },
+  ]
+);
+
+// 6. The AI X Academy Captions
+const AI_DATA = generateAccountPosts(
+  'a6666666-6666-6666-6666-666666666666',
+  'the.ai.x.academy',
+  '766100',
+  230000,
+  [
+    { text: '5 Framework Prompt Engineering terbaik untuk riset & coding tahun 2026 🧠 #AI #tech', isSlideshow: false },
+    { text: 'Cheatsheet shortcut AI tool yang wajib kamu bookmark minggu ini! 📌 Simpan ya.', isSlideshow: true },
+    { text: 'Workflow otomatisasi laporan bisnis dengan AI Agent: pangkas waktu hingga 15 jam ⚡️', isSlideshow: false },
+    { text: 'Perbandingan model AI terbaru untuk data analysis: mana yang paling akurat? 📊', isSlideshow: true },
+    { text: 'Tutorial bikin AI Assistant pribadi tanpa coding dari scratch 🤖 #automation', isSlideshow: false },
+    { text: 'Cara pakai AI untuk riset kompetitor bisnis dalam 10 menit 💼', isSlideshow: true },
+    { text: 'Generative AI tools terbaik untuk pembuatan slide presentasi pitch deck 📈', isSlideshow: false },
+    { text: 'Prompt rahasia untuk merangkum buku 300 halaman menjadi action items 📚', isSlideshow: true },
+    { text: 'Cara integrasi ChatGPT dengan Google Sheets untuk automasi data entry 📊', isSlideshow: false },
+    { text: 'Masa depan pekerjaan di era AI 2026: skill apa yang paling dicari perusahaan? 🎯', isSlideshow: false },
+  ]
+);
+
+// Combine all posts and snapshots
+export const ALL_SEEDED_POSTS: Post[] = [
+  ...INTAN_DATA.posts,
+  ...RANIA_DATA.posts,
+  ...NARA_DATA.posts,
+  ...DINDA_DATA.posts,
+  ...AQARA_DATA.posts,
+  ...AI_DATA.posts,
 ];
 
-// Snapshots for Intan's posts (showing historical change between Nov 2 and Nov 3)
-export const INTAN_POST_SNAPSHOTS: PostSnapshot[] = [
-  // Current snapshot (Nov 3, 2026)
-  {
-    id: 'ps-1-cur',
-    post_id: '7432891028391823741',
-    sync_job_id: 'job-intan-5',
-    play_count: 342500,
-    digg_count: 28400,
-    comment_count: 1420,
-    share_count: 3100,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-2-cur',
-    post_id: '7432746192847291832',
-    sync_job_id: 'job-intan-5',
-    play_count: 189400,
-    digg_count: 14200,
-    comment_count: 650,
-    share_count: 980,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-3-cur',
-    post_id: '7432394857192847583',
-    sync_job_id: 'job-intan-5',
-    play_count: 512000,
-    digg_count: 42100,
-    comment_count: 2890,
-    share_count: 5400,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-4-cur',
-    post_id: '7431982736452819204',
-    sync_job_id: 'job-intan-5',
-    play_count: 275000,
-    digg_count: 19800,
-    comment_count: 940,
-    share_count: 2150,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-5-cur',
-    post_id: '7431562948271938475',
-    sync_job_id: 'job-intan-5',
-    play_count: 142000,
-    digg_count: 11200,
-    comment_count: 420,
-    share_count: 730,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-6-cur',
-    post_id: '7431182746281938476',
-    sync_job_id: 'job-intan-5',
-    play_count: 398000,
-    digg_count: 31500,
-    comment_count: 1820,
-    share_count: 3840,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-7-cur',
-    post_id: '7430829182736451927',
-    sync_job_id: 'job-intan-5',
-    play_count: 94500,
-    digg_count: 6700,
-    comment_count: 230,
-    share_count: 310,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-8-cur',
-    post_id: '7430482910293847568',
-    sync_job_id: 'job-intan-5',
-    play_count: 221000,
-    digg_count: 17400,
-    comment_count: 810,
-    share_count: 1920,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-9-cur',
-    post_id: '7430182746192847569',
-    sync_job_id: 'job-intan-5',
-    play_count: 467000,
-    digg_count: 38900,
-    comment_count: 2100,
-    share_count: 4700,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-  {
-    id: 'ps-10-cur',
-    post_id: '7429819284719283740',
-    sync_job_id: 'job-intan-5',
-    play_count: 125000,
-    digg_count: 9100,
-    comment_count: 450,
-    share_count: 620,
-    captured_at: '2026-11-03T01:45:00Z',
-  },
-
-  // Previous snapshot (Nov 2, 2026) for accurate per-post delta calculation
-  {
-    id: 'ps-1-prev',
-    post_id: '7432891028391823741',
-    sync_job_id: 'job-intan-4',
-    play_count: 285000, // +57,500 views
-    digg_count: 24100,
-    comment_count: 1210,
-    share_count: 2700,
-    captured_at: '2026-11-02T02:00:00Z',
-  },
-  {
-    id: 'ps-2-prev',
-    post_id: '7432746192847291832',
-    sync_job_id: 'job-intan-4',
-    play_count: 165000, // +24,400 views
-    digg_count: 12500,
-    comment_count: 580,
-    share_count: 890,
-    captured_at: '2026-11-02T02:00:00Z',
-  },
-  {
-    id: 'ps-3-prev',
-    post_id: '7432394857192847583',
-    sync_job_id: 'job-intan-4',
-    play_count: 489000, // +23,000 views
-    digg_count: 40500,
-    comment_count: 2750,
-    share_count: 5100,
-    captured_at: '2026-11-02T02:00:00Z',
-  },
-  {
-    id: 'ps-4-prev',
-    post_id: '7431982736452819204',
-    sync_job_id: 'job-intan-4',
-    play_count: 268000, // +7,000 views
-    digg_count: 19400,
-    comment_count: 920,
-    share_count: 2100,
-    captured_at: '2026-11-02T02:00:00Z',
-  },
-  {
-    id: 'ps-5-prev',
-    post_id: '7431562948271938475',
-    sync_job_id: 'job-intan-4',
-    play_count: 139500, // +2,500 views
-    digg_count: 11000,
-    comment_count: 410,
-    share_count: 710,
-    captured_at: '2026-11-02T02:00:00Z',
-  },
-];
-
-// Posts for Aqara Indonesia
-export const AQARA_POSTS: Post[] = [
-  {
-    id: '7551001',
-    account_id: 'a5555555-5555-5555-5555-555555555555',
-    caption: 'Smart Door Lock U100 dengan Apple HomeKit & fingerprint unlock 🔑 #smarthome #aqara',
-    create_time_iso: '2026-11-02T10:00:00Z',
-    web_video_url: 'https://www.tiktok.com/@aqara.indonesia/video/7551001',
-    is_slideshow: false,
-    is_pinned: true,
-    cover_url: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-11-02T10:00:00Z',
-    updated_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: '7551002',
-    account_id: 'a5555555-5555-5555-5555-555555555555',
-    caption: 'Cara bikin lampu otomatis nyala pas kamu masuk ruangan pakai FP2 Presence Sensor 💡',
-    create_time_iso: '2026-10-31T08:30:00Z',
-    web_video_url: 'https://www.tiktok.com/@aqara.indonesia/video/7551002',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-31T08:30:00Z',
-    updated_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: '7551003',
-    account_id: 'a5555555-5555-5555-5555-555555555555',
-    caption: 'Unboxing Camera Hub G3: Smart camera dengan AI gesture recognition & pan-tilt 🎥',
-    create_time_iso: '2026-10-29T13:15:00Z',
-    web_video_url: 'https://www.tiktok.com/@aqara.indonesia/video/7551003',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-29T13:15:00Z',
-    updated_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: '7551004',
-    account_id: 'a5555555-5555-5555-5555-555555555555',
-    caption: 'Setup sensor kebocoran air Water Leak Sensor biar rumah ga banjir saat liburan 🚰',
-    create_time_iso: '2026-10-27T07:45:00Z',
-    web_video_url: 'https://www.tiktok.com/@aqara.indonesia/video/7551004',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-27T07:45:00Z',
-    updated_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: '7551005',
-    account_id: 'a5555555-5555-5555-5555-555555555555',
-    caption: 'Otomasi tirai jendela Smart Curtain Driver E1: bangun pagi auto terang ✨ #tipsrumah',
-    create_time_iso: '2026-10-25T11:20:00Z',
-    web_video_url: 'https://www.tiktok.com/@aqara.indonesia/video/7551005',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-25T11:20:00Z',
-    updated_at: '2026-11-03T02:10:00Z',
-  },
-];
-
-export const AQARA_POST_SNAPSHOTS: PostSnapshot[] = [
-  {
-    id: 'ps-aq-1',
-    post_id: '7551001',
-    sync_job_id: 'job-aqara-2',
-    play_count: 89400,
-    digg_count: 5400,
-    comment_count: 320,
-    share_count: 480,
-    captured_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: 'ps-aq-2',
-    post_id: '7551002',
-    sync_job_id: 'job-aqara-2',
-    play_count: 145000,
-    digg_count: 11200,
-    comment_count: 670,
-    share_count: 1850,
-    captured_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: 'ps-aq-3',
-    post_id: '7551003',
-    sync_job_id: 'job-aqara-2',
-    play_count: 67200,
-    digg_count: 4100,
-    comment_count: 190,
-    share_count: 310,
-    captured_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: 'ps-aq-4',
-    post_id: '7551004',
-    sync_job_id: 'job-aqara-2',
-    play_count: 42100,
-    digg_count: 2800,
-    comment_count: 110,
-    share_count: 240,
-    captured_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: 'ps-aq-5',
-    post_id: '7551005',
-    sync_job_id: 'job-aqara-2',
-    play_count: 98300,
-    digg_count: 7300,
-    comment_count: 410,
-    share_count: 890,
-    captured_at: '2026-11-03T02:10:00Z',
-  },
-  // Previous snapshots for delta
-  {
-    id: 'ps-aq-1-prev',
-    post_id: '7551001',
-    sync_job_id: 'job-aqara-1',
-    play_count: 74200,
-    digg_count: 4600,
-    comment_count: 280,
-    share_count: 410,
-    captured_at: '2026-11-01T02:00:00Z',
-  },
-  {
-    id: 'ps-aq-2-prev',
-    post_id: '7551002',
-    sync_job_id: 'job-aqara-1',
-    play_count: 128000,
-    digg_count: 9800,
-    comment_count: 590,
-    share_count: 1620,
-    captured_at: '2026-11-01T02:00:00Z',
-  },
-];
-
-// Posts for The AI X Academy
-export const AI_ACADEMY_POSTS: Post[] = [
-  {
-    id: '7661001',
-    account_id: 'a6666666-6666-6666-6666-666666666666',
-    caption: '5 Framework Prompt Engineering terbaik untuk riset & coding tahun 2026 🧠 #AI #tech',
-    create_time_iso: '2026-11-02T11:00:00Z',
-    web_video_url: 'https://www.tiktok.com/@the.ai.x.academy/video/7661001',
-    is_slideshow: false,
-    is_pinned: true,
-    cover_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-11-02T11:00:00Z',
-    updated_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: '7661002',
-    account_id: 'a6666666-6666-6666-6666-666666666666',
-    caption: 'Cheatsheet shortcut AI tool yang wajib kamu bookmark minggu ini! 📌 Jangan lupa save.',
-    create_time_iso: '2026-10-31T09:15:00Z',
-    web_video_url: 'https://www.tiktok.com/@the.ai.x.academy/video/7661002',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-31T09:15:00Z',
-    updated_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: '7661003',
-    account_id: 'a6666666-6666-6666-6666-666666666666',
-    caption: 'Workflow otomatisasi laporan bisnis dengan AI Agent: pangkas waktu hingga 15 jam ⚡️',
-    create_time_iso: '2026-10-29T14:30:00Z',
-    web_video_url: 'https://www.tiktok.com/@the.ai.x.academy/video/7661003',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-29T14:30:00Z',
-    updated_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: '7661004',
-    account_id: 'a6666666-6666-6666-6666-666666666666',
-    caption: 'Perbandingan model AI terbaru untuk data analysis: mana yang paling akurat? 📊',
-    create_time_iso: '2026-10-27T08:00:00Z',
-    web_video_url: 'https://www.tiktok.com/@the.ai.x.academy/video/7661004',
-    is_slideshow: true,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-27T08:00:00Z',
-    updated_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: '7661005',
-    account_id: 'a6666666-6666-6666-6666-666666666666',
-    caption: 'Tutorial bikin AI Assistant pribadi tanpa coding dari scratch 🤖 #automation',
-    create_time_iso: '2026-10-25T12:45:00Z',
-    web_video_url: 'https://www.tiktok.com/@the.ai.x.academy/video/7661005',
-    is_slideshow: false,
-    is_pinned: false,
-    cover_url: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400&auto=format&fit=crop&q=80',
-    created_at: '2026-10-25T12:45:00Z',
-    updated_at: '2026-11-02T16:20:00Z',
-  },
-];
-
-export const AI_ACADEMY_POST_SNAPSHOTS: PostSnapshot[] = [
-  {
-    id: 'ps-ai-1',
-    post_id: '7661001',
-    sync_job_id: 'job-ai-2',
-    play_count: 215000,
-    digg_count: 18400,
-    comment_count: 1250,
-    share_count: 4800,
-    captured_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: 'ps-ai-2',
-    post_id: '7661002',
-    sync_job_id: 'job-ai-2',
-    play_count: 324000,
-    digg_count: 29800,
-    comment_count: 2100,
-    share_count: 9400,
-    captured_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: 'ps-ai-3',
-    post_id: '7661003',
-    sync_job_id: 'job-ai-2',
-    play_count: 178000,
-    digg_count: 14500,
-    comment_count: 890,
-    share_count: 2650,
-    captured_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: 'ps-ai-4',
-    post_id: '7661004',
-    sync_job_id: 'job-ai-2',
-    play_count: 142000,
-    digg_count: 11200,
-    comment_count: 640,
-    share_count: 1980,
-    captured_at: '2026-11-02T16:20:00Z',
-  },
-  {
-    id: 'ps-ai-5',
-    post_id: '7661005',
-    sync_job_id: 'job-ai-2',
-    play_count: 289000,
-    digg_count: 25400,
-    comment_count: 1720,
-    share_count: 5800,
-    captured_at: '2026-11-02T16:20:00Z',
-  },
-  // Previous snapshots for delta
-  {
-    id: 'ps-ai-1-prev',
-    post_id: '7661001',
-    sync_job_id: 'job-ai-1',
-    play_count: 182000,
-    digg_count: 15600,
-    comment_count: 1040,
-    share_count: 3950,
-    captured_at: '2026-10-31T04:00:00Z',
-  },
-  {
-    id: 'ps-ai-2-prev',
-    post_id: '7661002',
-    sync_job_id: 'job-ai-1',
-    play_count: 295000,
-    digg_count: 27100,
-    comment_count: 1910,
-    share_count: 8500,
-    captured_at: '2026-10-31T04:00:00Z',
-  },
+export const ALL_SEEDED_POST_SNAPSHOTS: PostSnapshot[] = [
+  ...INTAN_DATA.snapshots,
+  ...RANIA_DATA.snapshots,
+  ...NARA_DATA.snapshots,
+  ...DINDA_DATA.snapshots,
+  ...AQARA_DATA.snapshots,
+  ...AI_DATA.snapshots,
 ];
 
 // Jobs history
@@ -778,18 +438,6 @@ export const INITIAL_JOBS: SyncJob[] = [
     created_at: '2026-11-03T01:44:15Z',
   },
   {
-    id: 'job-intan-4',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    apify_run_id: 'run-apify-intan-04',
-    apify_dataset_id: 'ds-apify-intan-04',
-    status: 'succeeded',
-    started_at: '2026-11-02T01:59:10Z',
-    completed_at: '2026-11-02T02:00:00Z',
-    results_count: 10,
-    charged_usd: 0.0308,
-    created_at: '2026-11-02T01:59:10Z',
-  },
-  {
     id: 'job-rania-2',
     account_id: 'a2222222-2222-2222-2222-222222222222',
     apify_run_id: 'run-apify-rania-02',
@@ -800,6 +448,18 @@ export const INITIAL_JOBS: SyncJob[] = [
     results_count: 10,
     charged_usd: 0.032,
     created_at: '2026-11-02T14:29:10Z',
+  },
+  {
+    id: 'job-aqara-2',
+    account_id: 'a5555555-5555-5555-5555-555555555555',
+    apify_run_id: 'run-apify-aqara-02',
+    apify_dataset_id: 'ds-apify-aqara-02',
+    status: 'succeeded',
+    started_at: '2026-11-03T02:09:10Z',
+    completed_at: '2026-11-03T02:10:00Z',
+    results_count: 10,
+    charged_usd: 0.031,
+    created_at: '2026-11-03T02:09:10Z',
   },
 ];
 
@@ -818,17 +478,6 @@ export const INITIAL_USAGE: UsageLedgerEntry[] = [
   },
   {
     id: 'use-02',
-    account_id: 'a1111111-1111-1111-1111-111111111111',
-    account_username: 'intansuarkartika',
-    sync_job_id: 'job-intan-4',
-    billing_cycle: '2026-11',
-    reserved_usd: 0.05,
-    final_charged_usd: 0.0308,
-    status: 'finalized',
-    created_at: '2026-11-02T02:00:00Z',
-  },
-  {
-    id: 'use-03',
     account_id: 'a2222222-2222-2222-2222-222222222222',
     account_username: 'rania.meutia',
     sync_job_id: 'job-rania-2',
@@ -837,5 +486,16 @@ export const INITIAL_USAGE: UsageLedgerEntry[] = [
     final_charged_usd: 0.032,
     status: 'finalized',
     created_at: '2026-11-02T14:30:00Z',
+  },
+  {
+    id: 'use-03',
+    account_id: 'a5555555-5555-5555-5555-555555555555',
+    account_username: 'aqara.indonesia',
+    sync_job_id: 'job-aqara-2',
+    billing_cycle: '2026-11',
+    reserved_usd: 0.05,
+    final_charged_usd: 0.031,
+    status: 'finalized',
+    created_at: '2026-11-03T02:10:00Z',
   },
 ];
