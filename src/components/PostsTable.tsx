@@ -104,10 +104,10 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
       {/* Table Header Controls (Matching Boltshift 'Recent orders' + search + sort) */}
-      <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
               Postingan Terpantau
             </h3>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold font-mono">
@@ -119,76 +119,202 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
           </p>
         </div>
 
-        {/* Search, Filter & Sort Controls */}
-        <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
+        {/* Search, Filter & Sort Controls: Clean & Non-wrapping on Mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2.5">
           {/* Search Input Pill */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari caption..."
-              className="pl-9 pr-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-44 sm:w-52 transition"
+              className="pl-9 pr-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full sm:w-52 transition"
             />
           </div>
 
-          {/* Type Filter Pills */}
-          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-full text-xs">
-            <button
-              onClick={() => setFilterType('all')}
-              className={`px-3 py-1 rounded-full font-medium transition ${
-                filterType === 'all'
-                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Semua
-            </button>
-            <button
-              onClick={() => setFilterType('video')}
-              className={`px-3 py-1 rounded-full font-medium transition flex items-center space-x-1 ${
-                filterType === 'video'
-                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Video className="w-3 h-3 text-blue-600" />
-              <span>Video</span>
-            </button>
-            <button
-              onClick={() => setFilterType('slideshow')}
-              className={`px-3 py-1 rounded-full font-medium transition flex items-center space-x-1 ${
-                filterType === 'slideshow'
-                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <ImageIcon className="w-3 h-3 text-indigo-600" />
-              <span>Slide</span>
-            </button>
-          </div>
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            {/* Type Filter Pills */}
+            <div className="grid grid-cols-3 sm:flex items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs flex-1 sm:flex-initial">
+              <button
+                onClick={() => setFilterType('all')}
+                className={`px-2.5 py-1 rounded-full font-medium transition text-center ${
+                  filterType === 'all'
+                    ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Semua
+              </button>
+              <button
+                onClick={() => setFilterType('video')}
+                className={`px-2 py-1 rounded-full font-medium transition flex items-center justify-center space-x-1 ${
+                  filterType === 'video'
+                    ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Video className="w-3 h-3 text-blue-600 shrink-0" />
+                <span>Video</span>
+              </button>
+              <button
+                onClick={() => setFilterType('slideshow')}
+                className={`px-2 py-1 rounded-full font-medium transition flex items-center justify-center space-x-1 ${
+                  filterType === 'slideshow'
+                    ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <ImageIcon className="w-3 h-3 text-indigo-600 shrink-0" />
+                <span>Slide</span>
+              </button>
+            </div>
 
-          {/* Sort Dropdown */}
-          <div className="relative inline-flex items-center">
-            <select
-              value={sortField}
-              onChange={(e) => setSortField(e.target.value as SortField)}
-              className="appearance-none pl-3 pr-8 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
-            >
-              <option value="date">Urutkan: Tanggal</option>
-              <option value="views">Urutkan: Views</option>
-              <option value="likes">Urutkan: Likes</option>
-              <option value="comments">Urutkan: Komentar</option>
-              <option value="er">Urutkan: Engagement Rate</option>
-            </select>
-            <SlidersHorizontal className="w-3 h-3 text-slate-400 absolute right-3 pointer-events-none" />
+            {/* Sort Dropdown */}
+            <div className="relative inline-flex items-center shrink-0">
+              <select
+                value={sortField}
+                onChange={(e) => setSortField(e.target.value as SortField)}
+                className="appearance-none pl-3 pr-7 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+              >
+                <option value="date">Urut: Tanggal</option>
+                <option value="views">Urut: Views</option>
+                <option value="likes">Urut: Likes</option>
+                <option value="comments">Urut: Komentar</option>
+                <option value="er">Urut: ER%</option>
+              </select>
+              <SlidersHorizontal className="w-3 h-3 text-slate-400 absolute right-2.5 pointer-events-none" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Table Content */}
-      <div className="overflow-x-auto">
+      {/* 1. Mobile Card List (Dedicated for Mobile Screens - Clean, Compact, No Dragging) */}
+      <div className="block sm:hidden divide-y divide-slate-100">
+        {sortedPosts.map((post) => {
+          const viewsGrowth = formatGrowth(post.views_growth);
+          const likesGrowth = formatGrowth(post.likes_growth);
+
+          return (
+            <div key={post.id} className="p-4 space-y-3 hover:bg-slate-50/60 transition">
+              {/* Header: Thumbnail + Badges + Date + Direct Link */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start space-x-3 min-w-0">
+                  <div className="relative w-12 h-16 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200/80">
+                    {post.cover_url ? (
+                      <img
+                        src={post.cover_url}
+                        alt="Cover"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        {post.is_slideshow ? (
+                          <ImageIcon className="w-5 h-5 text-indigo-400" />
+                        ) : (
+                          <Video className="w-5 h-5 text-blue-500" />
+                        )}
+                      </div>
+                    )}
+                    <div className="absolute bottom-1 right-1 bg-slate-900/80 text-white rounded px-1 text-[8px] font-semibold backdrop-blur-xs">
+                      {post.is_slideshow ? 'Slide' : 'Video'}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                      {post.is_pinned && (
+                        <span className="inline-flex items-center space-x-0.5 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          <Pin className="w-2.5 h-2.5 fill-amber-500" />
+                          <span>Disematkan</span>
+                        </span>
+                      )}
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {formatShortDateWIB(post.create_time_iso)} • {formatDateWIB(post.create_time_iso).split(' ')[3]} WIB
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-800 line-clamp-2 leading-relaxed font-medium">
+                      {post.caption || <span className="italic text-slate-400">Tanpa caption</span>}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Direct Link Icon */}
+                <a
+                  href={post.web_video_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 p-2 rounded-full bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white transition shadow-2xs"
+                  title="Buka di TikTok"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* 4-Stat Mobile Metrics Grid */}
+              <div className="grid grid-cols-4 gap-1.5 bg-slate-50/80 rounded-xl p-2.5 border border-slate-100 text-center">
+                {/* Views */}
+                <div>
+                  <div className="text-[10px] text-slate-400 flex items-center justify-center space-x-0.5">
+                    <Eye className="w-2.5 h-2.5 text-blue-600" />
+                    <span>Views</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 font-mono mt-0.5">
+                    {formatCompactNumber(post.current_play_count)}
+                  </div>
+                  {post.views_growth !== null && post.views_growth !== undefined && viewsGrowth.isPositive && (
+                    <div className="text-[9px] font-semibold text-emerald-600 font-mono">
+                      {viewsGrowth.text}
+                    </div>
+                  )}
+                </div>
+
+                {/* Likes */}
+                <div>
+                  <div className="text-[10px] text-slate-400 flex items-center justify-center space-x-0.5">
+                    <Heart className="w-2.5 h-2.5 text-rose-500" />
+                    <span>Likes</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 font-mono mt-0.5">
+                    {formatCompactNumber(post.current_digg_count)}
+                  </div>
+                  {post.likes_growth !== null && post.likes_growth !== undefined && likesGrowth.isPositive && (
+                    <div className="text-[9px] font-semibold text-rose-600 font-mono">
+                      {likesGrowth.text}
+                    </div>
+                  )}
+                </div>
+
+                {/* Komentar */}
+                <div>
+                  <div className="text-[10px] text-slate-400 flex items-center justify-center space-x-0.5">
+                    <MessageCircle className="w-2.5 h-2.5 text-slate-500" />
+                    <span>Komen</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-700 font-mono mt-0.5">
+                    {formatCompactNumber(post.current_comment_count)}
+                  </div>
+                </div>
+
+                {/* ER% */}
+                <div>
+                  <div className="text-[10px] text-blue-600 font-semibold">
+                    <span>ER%</span>
+                  </div>
+                  <div className="text-xs font-bold text-blue-600 font-mono mt-0.5">
+                    {formatEngagementRate(post.engagement_rate)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 2. Desktop Table Content (Full 8 Columns) */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-50/70 text-slate-500 uppercase tracking-wider border-b border-slate-100 text-[11px]">
             <tr>

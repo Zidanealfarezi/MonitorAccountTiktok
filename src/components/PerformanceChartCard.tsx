@@ -122,7 +122,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
   }));
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between">
       {/* Header with Title and Mode Switchers */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
         <div>
@@ -133,7 +133,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
             {activeChart === 'posts' && postMetric === 'views' && (
               <span className="text-xs px-2.5 py-0.5 rounded-full font-mono font-semibold bg-blue-50 text-blue-700 border border-blue-200 flex items-center space-x-1">
                 <Eye className="w-3 h-3 text-blue-600" />
-                <span>{formatCompactNumber(totalPostViews)} Total Views</span>
+                <span>{formatCompactNumber(totalPostViews)} Views</span>
               </span>
             )}
             {activeChart === 'followers' && hasEnoughFollowerData && (
@@ -176,13 +176,13 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
           </p>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center space-x-2 flex-wrap">
+        {/* Action Controls: Structured and balanced on mobile */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           {/* Main Chart Switcher Pill (Views 10 Video vs Kurva Followers) */}
-          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+          <div className="grid grid-cols-2 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs">
             <button
               onClick={() => setActiveChart('posts')}
-              className={`px-3 py-1.5 rounded-full font-medium transition ${
+              className={`px-3 py-1.5 rounded-full font-medium transition text-center ${
                 activeChart === 'posts'
                   ? 'bg-white text-slate-900 font-bold shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -192,7 +192,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
             </button>
             <button
               onClick={() => setActiveChart('followers')}
-              className={`px-3 py-1.5 rounded-full font-medium transition ${
+              className={`px-3 py-1.5 rounded-full font-medium transition text-center ${
                 activeChart === 'followers'
                   ? 'bg-white text-slate-900 font-bold shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -204,10 +204,10 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
 
           {/* Sub-Filters */}
           {activeChart === 'followers' ? (
-            <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+            <div className="grid grid-cols-3 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs">
               <button
                 onClick={() => setPeriod('7d')}
-                className={`px-2.5 py-1 rounded-full transition ${
+                className={`px-2.5 py-1 rounded-full transition text-center ${
                   period === '7d' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -215,7 +215,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
               </button>
               <button
                 onClick={() => setPeriod('30d')}
-                className={`px-2.5 py-1 rounded-full transition ${
+                className={`px-2.5 py-1 rounded-full transition text-center ${
                   period === '30d' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -223,7 +223,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
               </button>
               <button
                 onClick={() => setPeriod('all')}
-                className={`px-2.5 py-1 rounded-full transition ${
+                className={`px-2.5 py-1 rounded-full transition text-center ${
                   period === 'all' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -231,10 +231,10 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+            <div className="grid grid-cols-3 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs">
               <button
                 onClick={() => setPostMetric('views')}
-                className={`px-2.5 py-1 rounded-full transition ${
+                className={`px-2.5 py-1 rounded-full transition text-center ${
                   postMetric === 'views' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -242,7 +242,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
               </button>
               <button
                 onClick={() => setPostMetric('likes')}
-                className={`px-2.5 py-1 rounded-full transition ${
+                className={`px-2.5 py-1 rounded-full transition text-center ${
                   postMetric === 'likes' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -250,7 +250,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
               </button>
               <button
                 onClick={() => setPostMetric('engagement')}
-                className={`px-2.5 py-1 rounded-full transition ${
+                className={`px-2.5 py-1 rounded-full transition text-center ${
                   postMetric === 'engagement' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
