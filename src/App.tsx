@@ -147,6 +147,10 @@ export const App: React.FC = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  const handleDismissSyncAlert = React.useCallback(() => {
+    setSyncDetails((prev) => ({ ...prev, isOpen: false }));
+  }, []);
+
   // Trigger sync for currently selected account
   const handleTriggerSync = async () => {
     if (!selectedAccountId || isSyncing) return;
@@ -346,7 +350,7 @@ export const App: React.FC = () => {
         currentIndex={syncDetails.currentIndex}
         totalAccounts={syncDetails.totalAccounts}
         stepMessage={syncDetails.stepMessage}
-        onDismiss={() => setSyncDetails((prev) => ({ ...prev, isOpen: false }))}
+        onDismiss={handleDismissSyncAlert}
       />
 
       {/* Settings Modal */}

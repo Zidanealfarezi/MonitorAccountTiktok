@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, Clock, CheckCircle2, ChevronDown, ChevronUp, X, Radio } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Sparkles, Clock, ChevronDown, ChevronUp, X, Radio } from 'lucide-react';
 
 export interface CuteSyncAlertProps {
   isOpen: boolean;
@@ -48,7 +48,47 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
   const [isMinimized, setIsMinimized] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showFinished, setShowFinished] = useState(false);
-  const [wasSyncing, setWasSyncing] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  const prevSyncingRef = useRef(isSyncing);
+  const dismissTimerRef = useRef<any>(null);
+
+  // Close handler: cancels timers, sets dismissed flag, and notifies parent
+  const handleClose = () => {
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
+    setShowFinished(false);
+    setIsDismissed(true);
+    onDismiss?.();
+  };
+
+  // Sync state transitions
+  useEffect(() => {
+    if (isSyncing) {
+      // When a new sync starts: reset dismiss state
+      setIsDismissed(false);
+      setShowFinished(false);
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current);
+        dismissTimerRef.current = null;
+      }
+    } else if (prevSyncingRef.current && !isSyncing) {
+      // Sync just finished successfully: trigger cute celebration
+      setShowFinished(true);
+      dismissTimerRef.current = setTimeout(() => {
+        handleClose();
+      }, 4000);
+    }
+    prevSyncingRef.current = isSyncing;
+
+    return () => {
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current);
+      }
+    };
+  }, [isSyncing]);
 
   // Rotate cute quotes every 3.5 seconds
   useEffect(() => {
@@ -64,7 +104,6 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
     let timer: any = null;
     if (isSyncing) {
       setElapsedSeconds(0);
-      setShowFinished(false);
       timer = setInterval(() => {
         setElapsedSeconds((s) => s + 1);
       }, 1000);
@@ -74,19 +113,8 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
     };
   }, [isSyncing]);
 
-  // Handle completion transition (show celebratory cute screen for 3.5s)
-  useEffect(() => {
-    if (wasSyncing && !isSyncing) {
-      setShowFinished(true);
-      const timer = setTimeout(() => {
-        setShowFinished(false);
-        onDismiss?.();
-      }, 3800);
-      return () => clearTimeout(timer);
-    }
-    setWasSyncing(isSyncing);
-  }, [isSyncing, wasSyncing, onDismiss]);
-
+  // If dismissed or inactive, render nothing
+  if (isDismissed) return null;
   if (!isOpen && !showFinished) return null;
 
   // Calculate percentage
@@ -96,7 +124,7 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
     ? Math.round(((current - 0.3) / total) * 100)
     : 100;
 
-  // Format elapsed time (e.g., "14s" or "1m 12s")
+  // Format elapsed time (e.g., "14d" or "1m 12d")
   const formatElapsed = (sec: number) => {
     if (sec < 60) return `${sec}d`;
     const m = Math.floor(sec / 60);
@@ -108,6 +136,7 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
   if (isMinimized && isSyncing) {
     return (
       <button
+        type="button"
         onClick={() => setIsMinimized(false)}
         className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 flex items-center space-x-2.5 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-md border border-indigo-200/90 shadow-xl shadow-indigo-500/20 text-slate-800 hover:scale-105 active:scale-95 transition-all duration-300 animate-mascot-bounce cursor-pointer group"
       >
@@ -127,7 +156,10 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 max-w-sm sm:max-w-md w-[calc(100%-2rem)] sm:w-[420px] transition-all duration-300 animate-scale-in">
+    <div
+      id="cute-sync-alert"
+      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 max-w-sm sm:max-w-md w-[calc(100%-2rem)] sm:w-[420px] transition-all duration-300 animate-scale-in"
+    >
       <div className="relative overflow-hidden rounded-3xl bg-white/95 backdrop-blur-xl border border-indigo-100/90 shadow-2xl shadow-indigo-500/20 p-4 sm:p-5 ring-4 ring-indigo-500/10">
         
         {/* Playful Ambient Background Blurs */}
@@ -162,7 +194,11 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
             {/* Minimize Button */}
             {!showFinished && (
               <button
-                onClick={() => setIsMinimized(true)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMinimized(true);
+                }}
                 className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
                 title="Kecilkan alert"
               >
@@ -170,13 +206,14 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
               </button>
             )}
 
-            {/* Dismiss Button */}
+            {/* Dismiss 'X' Button */}
             <button
-              onClick={() => {
-                setShowFinished(false);
-                onDismiss?.();
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
               }}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer relative z-30"
               title="Tutup alert"
             >
               <X className="w-4 h-4" />
@@ -206,11 +243,12 @@ export const CuteSyncAlert: React.FC<CuteSyncAlertProps> = ({
             </div>
 
             <button
-              onClick={() => {
-                setShowFinished(false);
-                onDismiss?.();
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
               }}
-              className="px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              className="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold shadow-md shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer relative z-30"
             >
               Sip, Makasih! ✨
             </button>
