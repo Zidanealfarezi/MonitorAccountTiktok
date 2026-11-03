@@ -277,6 +277,42 @@ export class StorageService {
       }
     }
 
+    // 2. COMPREHENSIVE ANOMALY & CLIFF DROP PURGE:
+    // If a snapshot series contains artificial spikes (e.g. 858 -> 20 or 73,680 -> 20),
+    // automatically prune all fictitious predecessors before the real live value!
+    if (accountSnapshots.length >= 2) {
+      let hasAnomaly = false;
+      const cleanSnapshots: AccountSnapshot[] = [];
+
+      for (let i = 0; i < accountSnapshots.length; i++) {
+        const curr = accountSnapshots[i];
+        const nextSnaps = accountSnapshots.slice(i + 1);
+
+        const causesArtificialCliff = nextSnaps.some((next) => {
+          const prevFans = curr.fans ?? 0;
+          const nextFans = next.fans ?? 0;
+          return (
+            (prevFans > 50 && nextFans <= 30 && (prevFans - nextFans) / prevFans > 0.4) ||
+            (prevFans > 150 && nextFans < 80) ||
+            (prevFans > 500 && (prevFans - nextFans) / prevFans > 0.6)
+          );
+        });
+
+        if (causesArtificialCliff) {
+          hasAnomaly = true;
+          continue; // Prune artificial predecessor
+        }
+        cleanSnapshots.push(curr);
+      }
+
+      if (hasAnomaly && cleanSnapshots.length > 0) {
+        accountSnapshots = cleanSnapshots;
+        // Persist clean series back to storage
+        const otherAccountSnapshots = allSnapshots.filter((s) => s.account_id !== accountId);
+        this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, [...otherAccountSnapshots, ...cleanSnapshots]);
+      }
+    }
+
     const latestSnapshot = accountSnapshots.length > 0 ? accountSnapshots[accountSnapshots.length - 1] : null;
     const previousSnapshot = accountSnapshots.length > 1 ? accountSnapshots[accountSnapshots.length - 2] : null;
 

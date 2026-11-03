@@ -56,12 +56,17 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
       filtered = filtered.filter((s) => !isSeedSnapshot(s));
     }
 
-    // Safety 2: Anomaly Cliff Protection (reject legacy fictitious seed spikes)
+    // Safety 2: Anomaly Cliff Protection (reject legacy fictitious seed spikes or mock spikes)
     if (filtered.length >= 2) {
       for (let i = 1; i < filtered.length; i++) {
         const prev = filtered[i - 1].fans ?? 0;
         const curr = filtered[i].fans ?? 0;
-        if (prev > 1000 && curr < 200 && (prev - curr) / prev > 0.8) {
+        if (
+          (prev > 50 && curr <= 30 && (prev - curr) / prev > 0.4) ||
+          (prev > 150 && curr < 80) ||
+          (prev > 500 && (prev - curr) / prev > 0.6) ||
+          (prev > 1000 && curr < 200 && (prev - curr) / prev > 0.8)
+        ) {
           filtered = filtered.slice(i);
           break;
         }

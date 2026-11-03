@@ -255,9 +255,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Monitored Posts Data Table (Matching Boltshift 'Recent orders' style) */}
-            <ScrollReveal direction="up" duration={700} distance={28}>
-              <PostsTable posts={dashboardData.posts} />
-            </ScrollReveal>
+            <PostsTable posts={dashboardData.posts} />
           </div>
         ) : null}
       </main>
