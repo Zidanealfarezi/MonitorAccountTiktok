@@ -24,9 +24,11 @@ export const App: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  const [scrollY, setScrollY] = useState<number>(0);
 
   useEffect(() => {
     const handleScroll = () => {
+      setScrollY(window.scrollY);
       setShowBackToTop(window.scrollY > 280);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -171,7 +173,17 @@ export const App: React.FC = () => {
   const usage = StorageService.getMonthlyUsage();
 
   return (
-    <div className="min-h-screen bg-[#f4f6fb] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#f4f6fb] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
+      {/* Dynamic Background Parallax Lighting (Reacts to PC & Mobile Scroll) */}
+      <div
+        className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none transition-transform duration-500 ease-out -z-10"
+        style={{ transform: `translate3d(0, ${scrollY * 0.12}px, 0)` }}
+      />
+      <div
+        className="fixed top-1/3 right-10 w-[420px] h-[420px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none transition-transform duration-700 ease-out -z-10"
+        style={{ transform: `translate3d(0, ${-scrollY * 0.08}px, 0)` }}
+      />
+
       {/* Top Navbar */}
       <Header onOpenSettings={() => setIsSettingsOpen(true)} />
 

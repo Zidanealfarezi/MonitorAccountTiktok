@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings, currentTab = 'da
     }`}>
       {/* Dynamic Scroll Progress Bar */}
       <div
-        className="h-[2px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 absolute bottom-0 left-0 transition-all duration-100 ease-out"
+        className="h-[3px] bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 shadow-xs shadow-blue-500/40 absolute bottom-0 left-0 transition-all duration-100 ease-out z-50"
         style={{ width: `${scrollProgress}%` }}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">

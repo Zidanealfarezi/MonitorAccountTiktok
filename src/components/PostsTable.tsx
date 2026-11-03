@@ -389,12 +389,19 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 font-sans">
-            {sortedPosts.map((post) => {
+            {sortedPosts.map((post, idx) => {
               const viewsGrowth = formatGrowth(post.views_growth);
               const likesGrowth = formatGrowth(post.likes_growth);
 
               return (
-                <tr key={post.id} className="hover:bg-slate-50/70 transition">
+                <tr
+                  key={post.id}
+                  className="hover:bg-blue-50/50 hover:shadow-2xs transition-all duration-200 group"
+                  style={{
+                    animation: `fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both`,
+                    animationDelay: `${Math.min(idx * 40, 400)}ms`,
+                  }}
+                >
                   {/* Caption & Thumbnail */}
                   <td className="py-3.5 px-5 max-w-sm">
                     <div className="flex items-start space-x-3">

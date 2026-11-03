@@ -3,21 +3,21 @@ import { useState, useEffect, useRef } from 'react';
 /**
  * Smoothly animates numbers from 0 (or previous value) to target value using ease-out cubic
  */
-export function useCountUp(target: number | null | undefined, duration = 750): number | null {
-  const [currentVal, setCurrentVal] = useState<number | null>(target ?? null);
-  const prevTargetRef = useRef<number | null>(null);
+export function useCountUp(target: number | null | undefined, duration = 850): number | null {
+  const [currentVal, setCurrentVal] = useState<number | null>(0);
+  const prevTargetRef = useRef<number>(0);
 
   useEffect(() => {
     if (target === null || target === undefined) {
       setCurrentVal(null);
-      prevTargetRef.current = null;
+      prevTargetRef.current = 0;
       return;
     }
 
-    const startVal = prevTargetRef.current ?? 0;
+    const startVal = prevTargetRef.current;
     const endVal = target;
 
-    if (startVal === endVal) {
+    if (startVal === endVal && startVal !== 0) {
       setCurrentVal(endVal);
       return;
     }

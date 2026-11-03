@@ -16,9 +16,9 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   className = '',
   delay = 0,
   direction = 'up',
-  distance = 24,
-  duration = 600,
-  threshold = 0.1,
+  distance = 28,
+  duration = 650,
+  threshold = 0.05,
   once = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,7 +28,6 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     const node = domRef.current;
     if (!node) return;
 
-    // Check if IntersectionObserver is supported
     if (!('IntersectionObserver' in window)) {
       setIsVisible(true);
       return;
@@ -43,14 +42,13 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
               observer.unobserve(entry.target);
             }
           } else if (!once) {
-            // When user scrolls past or away, smoothly reset so it re-animates on scroll
             setIsVisible(false);
           }
         });
       },
       {
         threshold,
-        rootMargin: '0px 0px -30px 0px',
+        rootMargin: '0px 0px -20px 0px',
       }
     );
 
