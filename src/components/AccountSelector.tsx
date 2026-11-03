@@ -51,25 +51,29 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             </span>
           )}
 
-          {/* Sync All Button (White Pill with Border) */}
-          <button
-            onClick={onTriggerSyncAll}
-            disabled={isSyncing || isBudgetExceeded}
-            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-200/90 shadow-2xs transition active:scale-95 disabled:opacity-50"
-            title="Ambil data seluruh akun secara berurutan"
-          >
-            <Layers className="w-3.5 h-3.5 text-slate-500" />
-            <span>Ambil Semua</span>
-          </button>
-
-          {/* Primary Sync Button (Vibrant Blue Pill - exactly like Boltshift's 'Filter' button) */}
+          {/* Secondary Action: Ambil Data Akun Terpilih */}
           <button
             onClick={onTriggerSync}
             disabled={isSyncing || isBudgetExceeded}
-            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition active:scale-95 disabled:opacity-50"
+            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-xs font-semibold border border-slate-200/90 shadow-2xs transition active:scale-95 disabled:opacity-50"
+            title={`Ambil data hanya untuk @${selectedAccount?.username}`}
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Mengambil...' : `Ambil Data ${selectedAccount ? `@${selectedAccount.username}` : ''}`}</span>
+            <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span>Ambil Data @{selectedAccount ? selectedAccount.username : ''}</span>
+          </button>
+
+          {/* Primary Hero Action: Ambil Semua Data (Mencolok & Prominent) */}
+          <button
+            onClick={onTriggerSyncAll}
+            disabled={isSyncing || isBudgetExceeded}
+            className="inline-flex items-center space-x-2.5 px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/20 hover:ring-blue-500/40 transition-all duration-200 active:scale-95 disabled:opacity-50"
+            title="Ambil data seluruh akun sekaligus secara berurutan"
+          >
+            <Layers className="w-4 h-4 text-blue-100" />
+            <span className="tracking-wide">Ambil Semua Data</span>
+            <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-[10px] font-mono font-extrabold text-white">
+              {accounts.length} Akun
+            </span>
           </button>
         </div>
       </div>
