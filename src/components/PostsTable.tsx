@@ -10,7 +10,8 @@ import {
   Video,
   ArrowUpDown,
   TrendingUp,
-  Filter,
+  Search,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { PostWithSnapshot } from '../types';
 import {
@@ -30,6 +31,7 @@ type SortField = 'date' | 'views' | 'likes' | 'comments' | 'shares' | 'er';
 type ContentFilter = 'all' | 'video' | 'slideshow';
 
 export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [filterType, setFilterType] = useState<ContentFilter>('all');
@@ -44,10 +46,15 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
     }
   };
 
-  // Filter posts
+  // Filter posts by type and search query
   const filteredPosts = posts.filter((p) => {
-    if (filterType === 'video') return !p.is_slideshow;
-    if (filterType === 'slideshow') return p.is_slideshow;
+    if (filterType === 'video' && p.is_slideshow) return false;
+    if (filterType === 'slideshow' && !p.is_slideshow) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const caption = (p.caption || '').toLowerCase();
+      if (!caption.includes(q)) return false;
+    }
     return true;
   });
 
@@ -88,65 +95,94 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
 
   if (posts.length === 0) {
     return (
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 text-center">
-        <p className="text-sm text-slate-400">Belum ada postingan yang tersimpan untuk akun ini.</p>
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-8 text-center shadow-xs">
+        <p className="text-sm text-slate-500">Belum ada postingan yang tersimpan untuk akun ini.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden space-y-4">
-      {/* Table Header Controls */}
-      <div className="p-4 sm:p-5 border-b border-slate-800/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+      {/* Table Header Controls (Matching Boltshift 'Recent orders' + search + sort) */}
+      <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-sm font-semibold text-slate-200 uppercase tracking-wider">
-              Tabel Performa Postingan Terpantau ({sortedPosts.length})
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+              Postingan Terpantau
             </h3>
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">
-              Maks. 10 Terakhir
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold font-mono">
+              {sortedPosts.length} konten
             </span>
           </div>
-          <p className="text-xs text-slate-400">
-            Pertumbuhan views dihitung spesifik per ID postingan dari pengamatan sebelumnya
+          <p className="text-xs text-slate-400 mt-0.5">
+            Daftar 10 postingan terkini dan pergerakan views antar pengamatan
           </p>
         </div>
 
-        {/* Filter Controls */}
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+        {/* Search, Filter & Sort Controls */}
+        <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
+          {/* Search Input Pill */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari caption..."
+              className="pl-9 pr-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-44 sm:w-52 transition"
+            />
+          </div>
+
+          {/* Type Filter Pills */}
+          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-full text-xs">
             <button
               onClick={() => setFilterType('all')}
-              className={`px-3 py-1 rounded-lg font-medium transition ${
+              className={`px-3 py-1 rounded-full font-medium transition ${
                 filterType === 'all'
-                  ? 'bg-slate-800 text-white font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Semua
             </button>
             <button
               onClick={() => setFilterType('video')}
-              className={`px-3 py-1 rounded-lg font-medium transition flex items-center space-x-1 ${
+              className={`px-3 py-1 rounded-full font-medium transition flex items-center space-x-1 ${
                 filterType === 'video'
-                  ? 'bg-slate-800 text-white font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Video className="w-3 h-3 text-cyan-400" />
+              <Video className="w-3 h-3 text-blue-600" />
               <span>Video</span>
             </button>
             <button
               onClick={() => setFilterType('slideshow')}
-              className={`px-3 py-1 rounded-lg font-medium transition flex items-center space-x-1 ${
+              className={`px-3 py-1 rounded-full font-medium transition flex items-center space-x-1 ${
                 filterType === 'slideshow'
-                  ? 'bg-slate-800 text-white font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <ImageIcon className="w-3 h-3 text-amber-400" />
-              <span>Foto/Slide</span>
+              <ImageIcon className="w-3 h-3 text-indigo-600" />
+              <span>Slide</span>
             </button>
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative inline-flex items-center">
+            <select
+              value={sortField}
+              onChange={(e) => setSortField(e.target.value as SortField)}
+              className="appearance-none pl-3 pr-8 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+            >
+              <option value="date">Urutkan: Tanggal</option>
+              <option value="views">Urutkan: Views</option>
+              <option value="likes">Urutkan: Likes</option>
+              <option value="comments">Urutkan: Komentar</option>
+              <option value="er">Urutkan: Engagement Rate</option>
+            </select>
+            <SlidersHorizontal className="w-3 h-3 text-slate-400 absolute right-3 pointer-events-none" />
           </div>
         </div>
       </div>
@@ -154,82 +190,82 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
       {/* Table Content */}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="bg-slate-950/80 text-slate-400 uppercase tracking-wider border-b border-slate-800 text-[11px]">
+          <thead className="bg-slate-50/70 text-slate-500 uppercase tracking-wider border-b border-slate-100 text-[11px]">
             <tr>
-              <th className="py-3.5 px-4 font-semibold">Postingan & Caption</th>
-              <th className="py-3.5 px-3 font-semibold">
+              <th className="py-3 px-5 font-semibold">Postingan & Caption</th>
+              <th className="py-3 px-3 font-semibold">
                 <button
                   onClick={() => toggleSort('date')}
-                  className="flex items-center space-x-1 hover:text-slate-200 transition"
+                  className="flex items-center space-x-1 hover:text-slate-900 transition"
                 >
-                  <span>Tanggal Unggah (WIB)</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  <span>Tanggal Unggah</span>
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </button>
               </th>
-              <th className="py-3.5 px-3 font-semibold text-right">
+              <th className="py-3 px-3 font-semibold text-right">
                 <button
                   onClick={() => toggleSort('views')}
-                  className="inline-flex items-center space-x-1 hover:text-slate-200 transition ml-auto"
+                  className="inline-flex items-center space-x-1 hover:text-slate-900 transition ml-auto"
                 >
-                  <Eye className="w-3 h-3 text-emerald-400" />
+                  <Eye className="w-3 h-3 text-blue-600" />
                   <span>Views</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </button>
               </th>
-              <th className="py-3.5 px-3 font-semibold text-right">
+              <th className="py-3 px-3 font-semibold text-right">
                 <button
                   onClick={() => toggleSort('likes')}
-                  className="inline-flex items-center space-x-1 hover:text-slate-200 transition ml-auto"
+                  className="inline-flex items-center space-x-1 hover:text-slate-900 transition ml-auto"
                 >
-                  <Heart className="w-3 h-3 text-rose-400" />
+                  <Heart className="w-3 h-3 text-rose-500" />
                   <span>Likes</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </button>
               </th>
-              <th className="py-3.5 px-3 font-semibold text-right">
+              <th className="py-3 px-3 font-semibold text-right">
                 <button
                   onClick={() => toggleSort('comments')}
-                  className="inline-flex items-center space-x-1 hover:text-slate-200 transition ml-auto"
+                  className="inline-flex items-center space-x-1 hover:text-slate-900 transition ml-auto"
                 >
-                  <MessageCircle className="w-3 h-3 text-cyan-400" />
+                  <MessageCircle className="w-3 h-3 text-slate-500" />
                   <span>Komentar</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </button>
               </th>
-              <th className="py-3.5 px-3 font-semibold text-right">
+              <th className="py-3 px-3 font-semibold text-right">
                 <button
                   onClick={() => toggleSort('shares')}
-                  className="inline-flex items-center space-x-1 hover:text-slate-200 transition ml-auto"
+                  className="inline-flex items-center space-x-1 hover:text-slate-900 transition ml-auto"
                 >
-                  <Share2 className="w-3 h-3 text-indigo-400" />
+                  <Share2 className="w-3 h-3 text-slate-500" />
                   <span>Share</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </button>
               </th>
-              <th className="py-3.5 px-3 font-semibold text-right">
+              <th className="py-3 px-3 font-semibold text-right">
                 <button
                   onClick={() => toggleSort('er')}
-                  className="inline-flex items-center space-x-1 hover:text-slate-200 transition ml-auto"
+                  className="inline-flex items-center space-x-1 hover:text-slate-900 transition ml-auto"
                 >
                   <span>ER (Views)</span>
-                  <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </button>
               </th>
-              <th className="py-3.5 px-4 font-semibold text-center">Tautan</th>
+              <th className="py-3 px-4 font-semibold text-center">Tautan</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 font-sans">
+          <tbody className="divide-y divide-slate-100 font-sans">
             {sortedPosts.map((post) => {
               const viewsGrowth = formatGrowth(post.views_growth);
               const likesGrowth = formatGrowth(post.likes_growth);
 
               return (
-                <tr key={post.id} className="hover:bg-slate-800/40 transition">
+                <tr key={post.id} className="hover:bg-slate-50/70 transition">
                   {/* Caption & Thumbnail */}
-                  <td className="py-3.5 px-4 max-w-sm">
+                  <td className="py-3.5 px-5 max-w-sm">
                     <div className="flex items-start space-x-3">
-                      {/* Cover image or placeholder */}
-                      <div className="relative w-12 h-16 rounded-lg overflow-hidden bg-slate-800 flex-shrink-0 border border-slate-700/60">
+                      {/* Cover image */}
+                      <div className="relative w-12 h-16 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200/80">
                         {post.cover_url ? (
                           <img
                             src={post.cover_url}
@@ -238,16 +274,16 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
                             loading="lazy"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-500">
+                          <div className="w-full h-full flex items-center justify-center text-slate-400">
                             {post.is_slideshow ? (
-                              <ImageIcon className="w-5 h-5 text-amber-400" />
+                              <ImageIcon className="w-5 h-5 text-indigo-400" />
                             ) : (
-                              <Video className="w-5 h-5 text-cyan-400" />
+                              <Video className="w-5 h-5 text-blue-500" />
                             )}
                           </div>
                         )}
                         {/* Type Badge */}
-                        <div className="absolute bottom-1 right-1 bg-slate-950/90 rounded px-1 text-[9px] font-semibold">
+                        <div className="absolute bottom-1 right-1 bg-slate-900/80 text-white rounded px-1 text-[9px] font-semibold backdrop-blur-xs">
                           {post.is_slideshow ? 'Slide' : 'Video'}
                         </div>
                       </div>
@@ -256,45 +292,45 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
                       <div className="space-y-1 min-w-0">
                         <div className="flex items-center space-x-1.5 flex-wrap">
                           {post.is_pinned && (
-                            <span className="inline-flex items-center space-x-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-950/80 text-amber-400 border border-amber-800/50">
-                              <Pin className="w-2.5 h-2.5 fill-amber-400" />
+                            <span className="inline-flex items-center space-x-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                              <Pin className="w-2.5 h-2.5 fill-amber-500" />
                               <span>Disematkan</span>
                             </span>
                           )}
                           <span
                             className={`inline-flex items-center space-x-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${
                               post.is_slideshow
-                                ? 'bg-amber-950/60 text-amber-300 border border-amber-800/40'
-                                : 'bg-cyan-950/60 text-cyan-300 border border-cyan-800/40'
+                                ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                                : 'bg-blue-50 text-blue-700 border border-blue-200'
                             }`}
                           >
                             {post.is_slideshow ? 'Foto / Slideshow' : 'Video'}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-200 line-clamp-2 leading-relaxed">
-                          {post.caption || <span className="italic text-slate-500">Tanpa caption</span>}
+                        <p className="text-xs text-slate-800 line-clamp-2 leading-relaxed font-medium">
+                          {post.caption || <span className="italic text-slate-400">Tanpa caption</span>}
                         </p>
                       </div>
                     </div>
                   </td>
 
                   {/* Upload Date in WIB */}
-                  <td className="py-3.5 px-3 text-slate-400 whitespace-nowrap">
-                    <div>{formatShortDateWIB(post.create_time_iso)}</div>
-                    <div className="text-[10px] text-slate-500 font-mono">
+                  <td className="py-3.5 px-3 text-slate-600 whitespace-nowrap">
+                    <div className="font-medium">{formatShortDateWIB(post.create_time_iso)}</div>
+                    <div className="text-[10px] text-slate-400 font-mono">
                       {formatDateWIB(post.create_time_iso).split(' ')[3]} WIB
                     </div>
                   </td>
 
                   {/* Views + Delta */}
                   <td className="py-3.5 px-3 text-right font-mono whitespace-nowrap">
-                    <div className="font-semibold text-slate-100">
+                    <div className="font-bold text-slate-900">
                       {formatCompactNumber(post.current_play_count)}
                     </div>
                     {post.views_growth !== null && post.views_growth !== undefined && (
                       <div
                         className={`text-[10px] font-semibold flex items-center justify-end space-x-0.5 ${
-                          viewsGrowth.isPositive ? 'text-emerald-400' : 'text-slate-500'
+                          viewsGrowth.isPositive ? 'text-emerald-600' : 'text-slate-400'
                         }`}
                       >
                         {viewsGrowth.isPositive && <TrendingUp className="w-2.5 h-2.5" />}
@@ -305,13 +341,13 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
 
                   {/* Likes + Delta */}
                   <td className="py-3.5 px-3 text-right font-mono whitespace-nowrap">
-                    <div className="font-semibold text-slate-100">
+                    <div className="font-bold text-slate-900">
                       {formatCompactNumber(post.current_digg_count)}
                     </div>
                     {post.likes_growth !== null && post.likes_growth !== undefined && (
                       <div
                         className={`text-[10px] font-semibold flex items-center justify-end space-x-0.5 ${
-                          likesGrowth.isPositive ? 'text-rose-400' : 'text-slate-500'
+                          likesGrowth.isPositive ? 'text-rose-600' : 'text-slate-400'
                         }`}
                       >
                         {likesGrowth.isPositive && <TrendingUp className="w-2.5 h-2.5" />}
@@ -321,17 +357,17 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
                   </td>
 
                   {/* Comments */}
-                  <td className="py-3.5 px-3 text-right font-mono text-slate-300 whitespace-nowrap">
+                  <td className="py-3.5 px-3 text-right font-mono text-slate-600 whitespace-nowrap">
                     {formatCompactNumber(post.current_comment_count)}
                   </td>
 
                   {/* Shares */}
-                  <td className="py-3.5 px-3 text-right font-mono text-slate-300 whitespace-nowrap">
+                  <td className="py-3.5 px-3 text-right font-mono text-slate-600 whitespace-nowrap">
                     {formatCompactNumber(post.current_share_count)}
                   </td>
 
                   {/* Engagement Rate */}
-                  <td className="py-3.5 px-3 text-right font-mono font-semibold text-amber-300 whitespace-nowrap">
+                  <td className="py-3.5 px-3 text-right font-mono font-bold text-blue-600 whitespace-nowrap">
                     {formatEngagementRate(post.engagement_rate)}
                   </td>
 
@@ -341,7 +377,7 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
                       href={post.web_video_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-cyan-500 text-slate-300 hover:text-slate-950 transition"
+                      className="inline-flex items-center justify-center p-2 rounded-full bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white transition shadow-2xs"
                       title="Buka postingan langsung di TikTok"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { AccountSelector } from './components/AccountSelector';
 import { MetricsOverview } from './components/MetricsOverview';
-import { FollowersGrowthChart } from './components/FollowersGrowthChart';
-import { PostMetricHistoryChart } from './components/PostMetricHistoryChart';
+import { PerformanceChartCard } from './components/PerformanceChartCard';
+import { EngagementGaugeCard } from './components/EngagementGaugeCard';
 import { PostsTable } from './components/PostsTable';
 import { EmptyState } from './components/EmptyState';
 import { SettingsModal } from './components/SettingsModal';
@@ -106,31 +106,31 @@ export const App: React.FC = () => {
   const usage = StorageService.getMonthlyUsage();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950">
-      {/* Top Minimalist Header */}
+    <div className="min-h-screen bg-[#f4f6fb] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+      {/* Top Navbar */}
       <Header onOpenSettings={() => setIsSettingsOpen(true)} />
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5 flex-1 w-full">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-1 w-full">
         {/* Toast Notification */}
         {toastMessage && (
           <div
-            className={`fixed bottom-6 right-6 z-50 flex items-center space-x-2.5 px-4 py-2.5 rounded-xl shadow-2xl border text-xs font-medium transition-all duration-300 ${
+            className={`fixed bottom-6 right-6 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-2xl shadow-xl border text-xs font-semibold transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${
               toastMessage.type === 'success'
-                ? 'bg-emerald-950/90 text-emerald-300 border-emerald-800'
-                : 'bg-rose-950/90 text-rose-300 border-rose-800'
+                ? 'bg-white text-emerald-700 border-emerald-200 shadow-emerald-500/10'
+                : 'bg-white text-rose-700 border-rose-200 shadow-rose-500/10'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
             )}
             <span>{toastMessage.text}</span>
           </div>
         )}
 
-        {/* 1. Integrated Account Bar (Chips + Profile Banner + Sync Actions) */}
+        {/* 1. Account Selector Header & Chips (Boltshift Title & Segment Controls) */}
         <AccountSelector
           accounts={accounts}
           selectedAccountId={selectedAccountId}
@@ -151,8 +151,8 @@ export const App: React.FC = () => {
             isSyncing={isSyncing}
           />
         ) : dashboardData ? (
-          <div className="space-y-5">
-            {/* 5-KPI Unified Metrics Row (Clean Bento style) */}
+          <div className="space-y-6">
+            {/* 4-KPI Boltshift Metrics Row */}
             <MetricsOverview
               latestSnapshot={dashboardData.latestSnapshot}
               previousSnapshot={dashboardData.previousSnapshot}
@@ -160,22 +160,29 @@ export const App: React.FC = () => {
               posts={dashboardData.posts}
             />
 
-            {/* Analytical Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <FollowersGrowthChart snapshotsHistory={dashboardData.snapshotsHistory} />
-              <PostMetricHistoryChart posts={dashboardData.posts} />
+            {/* Middle Section: Performance Chart (2 Cols) + Radial Engagement Meter (1 Col) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div className="lg:col-span-2">
+                <PerformanceChartCard
+                  snapshotsHistory={dashboardData.snapshotsHistory}
+                  posts={dashboardData.posts}
+                />
+              </div>
+              <div className="lg:col-span-1">
+                <EngagementGaugeCard posts={dashboardData.posts} />
+              </div>
             </div>
 
-            {/* Monitored Posts Data Table */}
+            {/* Monitored Posts Data Table (Matching Boltshift 'Recent orders' style) */}
             <PostsTable posts={dashboardData.posts} />
           </div>
         ) : null}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900/80 bg-slate-950 py-4 text-center text-[11px] text-slate-500">
+      <footer className="border-t border-slate-200/80 bg-white py-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>TikTok Monitor • Mode Hemat</span>
+          <span className="font-medium text-slate-600">TikTok Monitor • Mode Hemat</span>
           <span className="font-mono text-slate-400">Penyedia: Apify Scraper • Zona: WIB</span>
         </div>
       </footer>
