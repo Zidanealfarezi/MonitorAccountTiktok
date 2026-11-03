@@ -43,16 +43,20 @@ const STORAGE_KEYS = {
   CONFIG: 'tiktok_monitor_config',
 };
 
+const DEFAULT_SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL || 'https://zcphjtzdlqkjsuncvdqm.supabase.co';
+const DEFAULT_SUPABASE_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_JLHPKR2Gedcpjt5A1Z1sbQ_cTEoriAH';
+const DEFAULT_APIFY_TOKEN = (import.meta as any).env?.VITE_APIFY_API_TOKEN || '';
+
 // Default app configuration
 export const DEFAULT_CONFIG: AppConfig = {
-  apifyApiToken: '',
-  supabaseUrl: '',
-  supabaseAnonKey: '',
+  apifyApiToken: DEFAULT_APIFY_TOKEN,
+  supabaseUrl: DEFAULT_SUPABASE_URL,
+  supabaseAnonKey: DEFAULT_SUPABASE_KEY,
   webhookSecret: 'secret_tiktok_monitor_2026',
   maxChargePerRunUsd: 0.05,
   monthlyBudgetCapUsd: 4.5,
   warningThresholdUsd: 4.0,
-  isMockMode: true,
+  isMockMode: false,
 };
 
 const PREFERRED_ACCOUNT_ORDER: Record<string, number> = {
@@ -147,7 +151,22 @@ export class StorageService {
   }
 
   public static getConfig(): AppConfig {
-    return this.getItem<AppConfig>(STORAGE_KEYS.CONFIG, DEFAULT_CONFIG);
+    const config = this.getItem<AppConfig>(STORAGE_KEYS.CONFIG, DEFAULT_CONFIG);
+    let updated = false;
+    if (!config.apifyApiToken || config.apifyApiToken.trim() === '') {
+      config.apifyApiToken = DEFAULT_CONFIG.apifyApiToken;
+      config.isMockMode = false;
+      updated = true;
+    }
+    if (!config.supabaseUrl || config.supabaseUrl.trim() === '') {
+      config.supabaseUrl = DEFAULT_CONFIG.supabaseUrl;
+      config.supabaseAnonKey = DEFAULT_CONFIG.supabaseAnonKey;
+      updated = true;
+    }
+    if (updated) {
+      this.saveConfig(config);
+    }
+    return config;
   }
 
   public static saveConfig(config: AppConfig): void {

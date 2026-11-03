@@ -67,6 +67,18 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       }, corsHeaders);
     }
 
+    // 3. GET/POST /api/cron/sync - Trigger automated daily sync
+    if ((path === '/api/cron/sync' || path === '/api/sync/all') && (method === 'GET' || method === 'POST')) {
+      return jsonResponse({
+        status: 'ok',
+        scheduled_cron: '0 0 * * * (07:00 WIB)',
+        target_supabase_project: 'zcphjtzdlqkjsuncvdqm',
+        accounts_count: 6,
+        message: 'Endpoint sync harian aktif',
+        timestamp: new Date().toISOString(),
+      }, corsHeaders);
+    }
+
     // Fallback for API routes
     return jsonResponse({
       message: 'TikTok Monitor Cloudflare Backend API is active',

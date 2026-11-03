@@ -31,9 +31,11 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
   snapshotsHistory,
   posts,
 }) => {
-  const [activeChart, setActiveChart] = useState<'followers' | 'posts'>('followers');
+  const [activeChart, setActiveChart] = useState<'followers' | 'posts'>('posts');
   const [period, setPeriod] = useState<'7d' | '30d' | 'all'>('all');
   const [postMetric, setPostMetric] = useState<'views' | 'likes' | 'engagement'>('views');
+
+  const totalPostViews = posts.reduce((sum, p) => sum + (p.current_play_count ?? 0), 0);
 
   // 1. Process Followers Data
   const filterSnapshots = () => {
@@ -128,6 +130,12 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
             <h3 className="text-base font-bold text-slate-900 tracking-tight">
               Performance Overview
             </h3>
+            {activeChart === 'posts' && postMetric === 'views' && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full font-mono font-semibold bg-blue-50 text-blue-700 border border-blue-200 flex items-center space-x-1">
+                <Eye className="w-3 h-3 text-blue-600" />
+                <span>{formatCompactNumber(totalPostViews)} Total Views</span>
+              </span>
+            )}
             {activeChart === 'followers' && hasEnoughFollowerData && (
               <span
                 className={`text-xs px-2 py-0.5 rounded-full font-mono flex items-center space-x-1 ${
@@ -158,16 +166,30 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
             )}
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            {activeChart === 'followers'
-              ? 'Riwayat kurva pengikut sesuai skala TikTok Studio'
-              : 'Sebaran metrik 10 postingan terkini'}
+            {activeChart === 'posts'
+              ? postMetric === 'views'
+                ? 'Sebaran tayangan (views) 10 postingan terkini'
+                : postMetric === 'likes'
+                ? 'Sebaran suka (likes) 10 postingan terkini'
+                : 'Sebaran rasio interaksi 10 postingan terkini'
+              : 'Riwayat kurva pengikut sesuai skala TikTok Studio'}
           </p>
         </div>
 
         {/* Action Controls */}
         <div className="flex items-center space-x-2 flex-wrap">
-          {/* Main Chart Switcher Pill (Followers vs Posts) */}
+          {/* Main Chart Switcher Pill (Views 10 Video vs Kurva Followers) */}
           <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+            <button
+              onClick={() => setActiveChart('posts')}
+              className={`px-3 py-1.5 rounded-full font-medium transition ${
+                activeChart === 'posts'
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Views 10 Video
+            </button>
             <button
               onClick={() => setActiveChart('followers')}
               className={`px-3 py-1.5 rounded-full font-medium transition ${
@@ -177,16 +199,6 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
               }`}
             >
               Kurva Followers
-            </button>
-            <button
-              onClick={() => setActiveChart('posts')}
-              className={`px-3 py-1.5 rounded-full font-medium transition ${
-                activeChart === 'posts'
-                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              10 Video
             </button>
           </div>
 
