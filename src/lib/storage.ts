@@ -96,6 +96,18 @@ export class StorageService {
       }
     }
 
+    // Clean up any unrealistic dummy snapshots that had >1000 for intansuarkartika
+    let currentSnapshots = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+    const hasUnrealisticIntan = currentSnapshots.some(
+      (s) => s.account_id === 'a1111111-1111-1111-1111-111111111111' && (s.fans || 0) > 1000
+    );
+    if (hasUnrealisticIntan) {
+      currentSnapshots = currentSnapshots.filter((s) => s.account_id !== 'a1111111-1111-1111-1111-111111111111');
+      const intanRealSnaps = ALL_ACCOUNT_SNAPSHOTS.filter((s) => s.account_id === 'a1111111-1111-1111-1111-111111111111');
+      currentSnapshots.push(...intanRealSnaps);
+      this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, currentSnapshots);
+    }
+
     if (!localStorage.getItem(STORAGE_KEYS.CONFIG)) {
       this.setItem(STORAGE_KEYS.CONFIG, DEFAULT_CONFIG);
     }

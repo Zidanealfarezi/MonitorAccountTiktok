@@ -71,50 +71,50 @@ export const INITIAL_ACCOUNTS: Account[] = [
 
 // Profile Snapshots for all 6 accounts
 export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
-  // 1. Intan Suar Kartika
+  // 1. Intan Suar Kartika (Real numbers from TikTok: 20 followers, 228 likes, 100 videos)
   {
     id: 'snap-intan-1',
     account_id: 'a1111111-1111-1111-1111-111111111111',
     sync_job_id: 'job-intan-1',
-    fans: 248900,
-    heart: 4120000,
-    video_count: 312,
+    fans: 19,
+    heart: 220,
+    video_count: 98,
     captured_at: '2026-10-28T02:00:00Z',
   },
   {
     id: 'snap-intan-2',
     account_id: 'a1111111-1111-1111-1111-111111111111',
     sync_job_id: 'job-intan-2',
-    fans: 250400,
-    heart: 4156000,
-    video_count: 314,
+    fans: 19,
+    heart: 224,
+    video_count: 99,
     captured_at: '2026-10-30T02:00:00Z',
   },
   {
     id: 'snap-intan-3',
     account_id: 'a1111111-1111-1111-1111-111111111111',
     sync_job_id: 'job-intan-3',
-    fans: 252100,
-    heart: 4192000,
-    video_count: 315,
+    fans: 20,
+    heart: 226,
+    video_count: 100,
     captured_at: '2026-11-01T02:00:00Z',
   },
   {
     id: 'snap-intan-4',
     account_id: 'a1111111-1111-1111-1111-111111111111',
     sync_job_id: 'job-intan-4',
-    fans: 253800,
-    heart: 4235000,
-    video_count: 316,
+    fans: 20,
+    heart: 227,
+    video_count: 100,
     captured_at: '2026-11-02T02:00:00Z',
   },
   {
     id: 'snap-intan-5',
     account_id: 'a1111111-1111-1111-1111-111111111111',
     sync_job_id: 'job-intan-5',
-    fans: 255250, // +1,450 fans
-    heart: 4280500,
-    video_count: 318,
+    fans: 20, // +0 / +1 realistic organic
+    heart: 228,
+    video_count: 100,
     captured_at: '2026-11-03T01:45:00Z',
   },
 
