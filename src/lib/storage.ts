@@ -54,6 +54,24 @@ export const DEFAULT_CONFIG: AppConfig = {
   isMockMode: true,
 };
 
+const PREFERRED_ACCOUNT_ORDER: Record<string, number> = {
+  'intansuarkartika': 1,
+  'the.ai.x.academy': 2,
+  'aqara.indonesia': 3,
+  'dinda.kemala_': 4,
+  'rania.meutia': 5,
+  'nara.adelia_': 6,
+};
+
+export const sortAccounts = (accounts: Account[]): Account[] => {
+  return [...accounts].sort((a, b) => {
+    const orderA = PREFERRED_ACCOUNT_ORDER[a.username.toLowerCase()] ?? 999;
+    const orderB = PREFERRED_ACCOUNT_ORDER[b.username.toLowerCase()] ?? 999;
+    if (orderA !== orderB) return orderA - orderB;
+    return a.display_name.localeCompare(b.display_name);
+  });
+};
+
 export class StorageService {
   private static getItem<T>(key: string, defaultValue: T): T {
     try {
@@ -123,7 +141,8 @@ export class StorageService {
 
   public static getAccounts(): Account[] {
     this.init();
-    return this.getItem<Account[]>(STORAGE_KEYS.ACCOUNTS, INITIAL_ACCOUNTS);
+    const accounts = this.getItem<Account[]>(STORAGE_KEYS.ACCOUNTS, INITIAL_ACCOUNTS);
+    return sortAccounts(accounts);
   }
 
   public static getAccount(id: string): Account | null {

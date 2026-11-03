@@ -13,6 +13,39 @@ export const INITIAL_ACCOUNTS: Account[] = [
     updated_at: '2026-11-03T01:45:00Z',
   },
   {
+    id: 'a6666666-6666-6666-6666-666666666666',
+    username: 'the.ai.x.academy',
+    display_name: 'The AI X Academy',
+    tiktok_id: '7693820194827163542',
+    avatar_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80',
+    status: 'active',
+    last_sync_at: '2026-11-02T16:20:00Z', // 23:20 WIB
+    created_at: '2026-10-20T00:00:00Z',
+    updated_at: '2026-11-02T16:20:00Z',
+  },
+  {
+    id: 'a5555555-5555-5555-5555-555555555555',
+    username: 'aqara.indonesia',
+    display_name: 'Aqara Indonesia',
+    tiktok_id: '7582910492817264821',
+    avatar_url: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=200&auto=format&fit=crop&q=80',
+    status: 'active',
+    last_sync_at: '2026-11-03T02:10:00Z', // 09:10 WIB
+    created_at: '2026-10-20T00:00:00Z',
+    updated_at: '2026-11-03T02:10:00Z',
+  },
+  {
+    id: 'a4444444-4444-4444-4444-444444444444',
+    username: 'dinda.kemala_',
+    display_name: 'Dinda Kemala',
+    tiktok_id: '7483920192837465192',
+    avatar_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
+    status: 'active',
+    last_sync_at: '2026-11-03T01:15:00Z', // 08:15 WIB
+    created_at: '2026-10-20T00:00:00Z',
+    updated_at: '2026-11-03T01:15:00Z',
+  },
+  {
     id: 'a2222222-2222-2222-2222-222222222222',
     username: 'rania.meutia',
     display_name: 'Rania Meutia',
@@ -33,39 +66,6 @@ export const INITIAL_ACCOUNTS: Account[] = [
     last_sync_at: '2026-11-02T03:15:00Z', // 10:15 WIB
     created_at: '2026-10-20T00:00:00Z',
     updated_at: '2026-11-02T03:15:00Z',
-  },
-  {
-    id: 'a4444444-4444-4444-4444-444444444444',
-    username: 'dinda.kemala_',
-    display_name: 'Dinda Kemala',
-    tiktok_id: '7483920192837465192',
-    avatar_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
-    status: 'active',
-    last_sync_at: '2026-11-03T01:15:00Z', // 08:15 WIB
-    created_at: '2026-10-20T00:00:00Z',
-    updated_at: '2026-11-03T01:15:00Z',
-  },
-  {
-    id: 'a5555555-5555-5555-5555-555555555555',
-    username: 'aqara.indonesia',
-    display_name: 'Aqara Indonesia',
-    tiktok_id: '7582910492817264821',
-    avatar_url: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=200&auto=format&fit=crop&q=80',
-    status: 'active',
-    last_sync_at: '2026-11-03T02:10:00Z', // 09:10 WIB
-    created_at: '2026-10-20T00:00:00Z',
-    updated_at: '2026-11-03T02:10:00Z',
-  },
-  {
-    id: 'a6666666-6666-6666-6666-666666666666',
-    username: 'the.ai.x.academy',
-    display_name: 'The AI X Academy',
-    tiktok_id: '7693820194827163542',
-    avatar_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80',
-    status: 'active',
-    last_sync_at: '2026-11-02T16:20:00Z', // 23:20 WIB
-    created_at: '2026-10-20T00:00:00Z',
-    updated_at: '2026-11-02T16:20:00Z',
   },
 ];
 

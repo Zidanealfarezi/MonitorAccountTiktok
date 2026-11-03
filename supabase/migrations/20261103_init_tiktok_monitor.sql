@@ -169,9 +169,9 @@ WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 INSERT INTO public.accounts (id, username, display_name, status)
 VALUES 
   ('a1111111-1111-1111-1111-111111111111', 'intansuarkartika', 'Intan Suar Kartika', 'active'),
-  ('a2222222-2222-2222-2222-222222222222', 'rania.meutia', 'Rania Meutia', 'active'),
-  ('a3333333-3333-3333-3333-333333333333', 'nara.adelia_', 'Nara Adelia', 'active'),
-  ('a4444444-4444-4444-4444-444444444444', 'dinda.kemala_', 'Dinda Kemala', 'active'),
+  ('a6666666-6666-6666-6666-666666666666', 'the.ai.x.academy', 'The AI X Academy', 'active'),
   ('a5555555-5555-5555-5555-555555555555', 'aqara.indonesia', 'Aqara Indonesia', 'active'),
-  ('a6666666-6666-6666-6666-666666666666', 'the.ai.x.academy', 'The AI X Academy', 'active')
+  ('a4444444-4444-4444-4444-444444444444', 'dinda.kemala_', 'Dinda Kemala', 'active'),
+  ('a2222222-2222-2222-2222-222222222222', 'rania.meutia', 'Rania Meutia', 'active'),
+  ('a3333333-3333-3333-3333-333333333333', 'nara.adelia_', 'Nara Adelia', 'active')
 ON CONFLICT DO NOTHING;
