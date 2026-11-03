@@ -102,7 +102,7 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
   }
 
   return (
-    <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs card-lift animate-fade-in-up [animation-delay:280ms]">
       {/* Table Header Controls (Matching Boltshift 'Recent orders' + search + sort) */}
       <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
         <div>

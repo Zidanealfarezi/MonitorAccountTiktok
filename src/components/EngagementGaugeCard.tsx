@@ -6,6 +6,7 @@ import {
   formatEngagementRate,
   formatCompactNumber,
 } from '../lib/formatters';
+import { useCountUp } from '../lib/useCountUp';
 
 interface EngagementGaugeCardProps {
   posts: PostWithSnapshot[];
@@ -29,6 +30,9 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
   const totalInteractions = totalLikes + totalComments + totalShares;
   const avgViewsPerPost = postsCount > 0 ? Math.round(totalViews / postsCount) : 0;
   const batchER = calculateEngagementRate(totalViews, totalLikes, totalComments, totalShares);
+
+  const animatedAvgViews = useCountUp(avgViewsPerPost);
+  const animatedInteractions = useCountUp(totalInteractions);
 
   // Benchmarking ER: 0% to 15% (15% is viral benchmark on TikTok)
   const erValue = batchER ?? 0;
@@ -69,7 +73,7 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
   });
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between card-lift animate-fade-in-up [animation-delay:240ms]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -104,18 +108,18 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
               stroke={t.isActive ? t.activeColor : '#e2e8f0'}
               strokeWidth="7"
               strokeLinecap="round"
-              className="transition-all duration-500"
+              className="transition-all duration-700 ease-out"
             />
           ))}
         </svg>
 
         {/* Center ER Text inside the Arc */}
-        <div className="absolute bottom-2 text-center">
+        <div className="absolute bottom-2 text-center animate-scale-in">
           <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono tracking-tight">
             {formatEngagementRate(batchER)}
           </div>
           <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-0.5 flex items-center justify-center space-x-1">
-            <Flame className="w-3.5 h-3.5 text-blue-600" />
+            <Flame className="w-3.5 h-3.5 text-blue-600 animate-float" />
             <span>Kualitas Interaksi</span>
           </div>
         </div>
@@ -123,24 +127,24 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
 
       {/* Bottom 2 Stat Boxes (Matching Boltshift Number of Sales & Total Revenue) */}
       <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 mt-1">
-        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3">
+        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3 hover:bg-slate-100/70 transition-colors">
           <div className="text-[11px] font-medium text-slate-500">
             Rata-rata Views
           </div>
-          <div className="text-lg font-bold text-slate-900 font-mono mt-0.5">
-            {formatCompactNumber(avgViewsPerPost)}
+          <div className="text-lg font-bold text-slate-900 font-mono mt-0.5 transition-all">
+            {formatCompactNumber(animatedAvgViews)}
           </div>
           <div className="text-[10px] text-blue-600 font-medium mt-0.5">
             Per video terpantau
           </div>
         </div>
 
-        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3">
+        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3 hover:bg-slate-100/70 transition-colors">
           <div className="text-[11px] font-medium text-slate-500">
             Total Interaksi
           </div>
-          <div className="text-lg font-bold text-slate-900 font-mono mt-0.5">
-            {formatCompactNumber(totalInteractions)}
+          <div className="text-lg font-bold text-slate-900 font-mono mt-0.5 transition-all">
+            {formatCompactNumber(animatedInteractions)}
           </div>
           <div className="text-[10px] text-slate-400 mt-0.5">
             Likes + Komentar + Share

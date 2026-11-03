@@ -122,7 +122,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
   }));
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between card-lift animate-fade-in-up [animation-delay:200ms]">
       {/* Header with Title and Mode Switchers */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
         <div>
@@ -326,6 +326,9 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                     activeDot={{ r: 6, fill: '#1d4ed8', stroke: '#fff', strokeWidth: 2 }}
                     fillOpacity={1}
                     fill="url(#followerAreaGrad)"
+                    isAnimationActive={true}
+                    animationDuration={700}
+                    animationEasing="ease-out"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -379,7 +382,7 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                     return null;
                   }}
                 />
-                <Bar dataKey={postMetric} radius={[6, 6, 0, 0]}>
+                <Bar dataKey={postMetric} radius={[6, 6, 0, 0]} isAnimationActive={true} animationDuration={700} animationEasing="ease-out">
                   {postsData.map((_, idx) => (
                     <Cell
                       key={`cell-${idx}`}

@@ -151,7 +151,7 @@ export const App: React.FC = () => {
             isSyncing={isSyncing}
           />
         ) : dashboardData ? (
-          <div className="space-y-6">
+          <div key={selectedAccountId} className="space-y-6">
             {/* 4-KPI Boltshift Metrics Row */}
             <MetricsOverview
               latestSnapshot={dashboardData.latestSnapshot}

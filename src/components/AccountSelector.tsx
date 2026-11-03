@@ -56,7 +56,7 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             <button
               onClick={onTriggerSyncAll}
               disabled={isSyncing || isBudgetExceeded}
-              className="inline-flex items-center justify-center space-x-2.5 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/20 hover:ring-blue-500/40 transition-all duration-200 active:scale-95 disabled:opacity-50 order-1 sm:order-2 w-full sm:w-auto"
+              className="inline-flex items-center justify-center space-x-2.5 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 animate-gradient hover:animate-none hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/20 hover:ring-blue-500/40 hover:scale-[1.02] transition-all duration-300 active:scale-95 disabled:opacity-50 order-1 sm:order-2 w-full sm:w-auto cursor-pointer"
               title="Ambil data seluruh akun sekaligus secara berurutan"
             >
               <Layers className="w-4 h-4 text-blue-100 shrink-0" />
@@ -70,7 +70,7 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             <button
               onClick={onTriggerSync}
               disabled={isSyncing || isBudgetExceeded}
-              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-xs font-semibold border border-slate-200/90 shadow-2xs transition active:scale-95 disabled:opacity-50 order-2 sm:order-1 w-full sm:w-auto"
+              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-xs font-semibold border border-slate-200/90 shadow-2xs hover:scale-[1.01] transition-all duration-200 active:scale-95 disabled:opacity-50 order-2 sm:order-1 w-full sm:w-auto cursor-pointer"
               title={`Ambil data hanya untuk @${selectedAccount?.username}`}
             >
               <RefreshCw className={`w-3.5 h-3.5 text-slate-500 shrink-0 ${isSyncing ? 'animate-spin' : ''}`} />
@@ -88,10 +88,10 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             <button
               key={acc.id}
               onClick={() => onSelectAccount(acc.id)}
-              className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-150 flex-shrink-0 ${
+              className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0 cursor-pointer ${
                 isSelected
-                  ? 'bg-slate-900 text-white shadow-sm ring-2 ring-slate-900/10 font-semibold'
-                  : 'bg-white hover:bg-slate-100/80 text-slate-600 border border-slate-200/80'
+                  ? 'bg-slate-900 text-white shadow-md ring-2 ring-slate-900/10 font-semibold scale-[1.02]'
+                  : 'bg-white hover:bg-slate-100/80 text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:border-slate-300'
               }`}
             >
               <div className="relative">
