@@ -14,6 +14,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { PostWithSnapshot } from '../types';
+import { ScrollReveal } from './ScrollReveal';
 import {
   formatCompactNumber,
   formatExactNumber,
@@ -191,12 +192,19 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
 
       {/* 1. Mobile Card List (Dedicated for Mobile Screens - Clean, Compact, No Dragging) */}
       <div className="block sm:hidden divide-y divide-slate-100">
-        {sortedPosts.map((post) => {
+        {sortedPosts.map((post, idx) => {
           const viewsGrowth = formatGrowth(post.views_growth);
           const likesGrowth = formatGrowth(post.likes_growth);
 
           return (
-            <div key={post.id} className="p-4 space-y-3 hover:bg-slate-50/60 transition">
+            <ScrollReveal
+              key={post.id}
+              direction="up"
+              distance={16}
+              duration={450}
+              delay={Math.min(idx * 35, 180)}
+              className="p-4 space-y-3 hover:bg-slate-50/60 transition"
+            >
               {/* Header: Thumbnail + Badges + Date + Direct Link */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start space-x-3 min-w-0">
@@ -246,7 +254,7 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
                   href={post.web_video_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 p-2 rounded-full bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white transition shadow-2xs"
+                  className="shrink-0 p-2 rounded-full bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white transition shadow-2xs hover:scale-110 active:scale-95 cursor-pointer"
                   title="Buka di TikTok"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -308,7 +316,7 @@ export const PostsTable: React.FC<PostsTableProps> = ({ posts }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           );
         })}
       </div>

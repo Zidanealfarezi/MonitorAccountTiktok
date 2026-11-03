@@ -9,7 +9,8 @@ import { EmptyState } from './components/EmptyState';
 import { SettingsModal } from './components/SettingsModal';
 import { StorageService } from './lib/storage';
 import { Account, AccountDashboardData } from './types';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ChevronUp } from 'lucide-react';
+import { ScrollReveal } from './components/ScrollReveal';
 
 export const App: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -19,6 +20,15 @@ export const App: React.FC = () => {
   const [syncProgress, setSyncProgress] = useState<string>('');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 280);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Load initial accounts
   const loadAccountsData = () => {
@@ -131,17 +141,19 @@ export const App: React.FC = () => {
         )}
 
         {/* 1. Account Selector Header & Chips (Boltshift Title & Segment Controls) */}
-        <AccountSelector
-          accounts={accounts}
-          selectedAccountId={selectedAccountId}
-          onSelectAccount={handleSelectAccount}
-          onAddNewAccount={() => setIsSettingsOpen(true)}
-          isSyncing={isSyncing}
-          syncProgressMessage={syncProgress}
-          isBudgetExceeded={usage.isBudgetExceeded}
-          onTriggerSync={handleTriggerSync}
-          onTriggerSyncAll={handleTriggerSyncAll}
-        />
+        <ScrollReveal direction="down" duration={500} distance={16}>
+          <AccountSelector
+            accounts={accounts}
+            selectedAccountId={selectedAccountId}
+            onSelectAccount={handleSelectAccount}
+            onAddNewAccount={() => setIsSettingsOpen(true)}
+            isSyncing={isSyncing}
+            syncProgressMessage={syncProgress}
+            isBudgetExceeded={usage.isBudgetExceeded}
+            onTriggerSync={handleTriggerSync}
+            onTriggerSyncAll={handleTriggerSyncAll}
+          />
+        </ScrollReveal>
 
         {/* 2. Content: Empty State or Active Dashboard */}
         {dashboardData && !dashboardData.latestSnapshot && dashboardData.posts.length === 0 ? (
@@ -153,31 +165,46 @@ export const App: React.FC = () => {
         ) : dashboardData ? (
           <div key={selectedAccountId} className="space-y-6">
             {/* 4-KPI Boltshift Metrics Row */}
-            <MetricsOverview
-              latestSnapshot={dashboardData.latestSnapshot}
-              previousSnapshot={dashboardData.previousSnapshot}
-              followersDiff={dashboardData.followersDiff}
-              posts={dashboardData.posts}
-            />
+            <ScrollReveal direction="up" duration={600} distance={20}>
+              <MetricsOverview
+                latestSnapshot={dashboardData.latestSnapshot}
+                previousSnapshot={dashboardData.previousSnapshot}
+                followersDiff={dashboardData.followersDiff}
+                posts={dashboardData.posts}
+              />
+            </ScrollReveal>
 
             {/* Middle Section: Performance Chart (2 Cols) + Radial Engagement Meter (1 Col) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div className="lg:col-span-2">
+              <ScrollReveal direction="up" duration={650} delay={80} distance={24} className="lg:col-span-2">
                 <PerformanceChartCard
                   snapshotsHistory={dashboardData.snapshotsHistory}
                   posts={dashboardData.posts}
                 />
-              </div>
-              <div className="lg:col-span-1">
+              </ScrollReveal>
+              <ScrollReveal direction="up" duration={650} delay={160} distance={24} className="lg:col-span-1">
                 <EngagementGaugeCard posts={dashboardData.posts} />
-              </div>
+              </ScrollReveal>
             </div>
 
             {/* Monitored Posts Data Table (Matching Boltshift 'Recent orders' style) */}
-            <PostsTable posts={dashboardData.posts} />
+            <ScrollReveal direction="up" duration={700} distance={28}>
+              <PostsTable posts={dashboardData.posts} />
+            </ScrollReveal>
           </div>
         ) : null}
       </main>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-slate-900/90 hover:bg-blue-600 text-white shadow-xl backdrop-blur-xs transition-all duration-300 hover:scale-110 active:scale-95 animate-scale-in cursor-pointer"
+          title="Kembali ke atas"
+        >
+          <ChevronUp className="w-4 h-4" />
+        </button>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-200/80 bg-white py-4 text-center text-xs text-slate-500">

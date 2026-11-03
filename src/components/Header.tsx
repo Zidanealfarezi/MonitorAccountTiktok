@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, ShieldCheck, Database, Bell, Sparkles } from 'lucide-react';
 import { formatCurrencyUsd } from '../lib/formatters';
 import { StorageService } from '../lib/storage';
@@ -10,12 +10,37 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSettings, currentTab = 'dashboard', onTabChange }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 15);
+
+      const winHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (winHeight > 0) {
+        setScrollProgress(Math.min(100, Math.max(0, (scrollY / winHeight) * 100)));
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const usage = StorageService.getMonthlyUsage();
   const config = StorageService.getConfig();
   const budgetPercent = Math.min(100, Math.round((usage.totalChargedUsd / config.monthlyBudgetCapUsd) * 100));
 
   return (
-    <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all">
+    <header className={`bg-white/85 backdrop-blur-md sticky top-0 z-40 transition-all duration-300 ${
+      isScrolled ? 'shadow-md shadow-slate-900/5 border-b border-slate-200/90' : 'border-b border-slate-200/60'
+    }`}>
+      {/* Dynamic Scroll Progress Bar */}
+      <div
+        className="h-[2px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 absolute bottom-0 left-0 transition-all duration-100 ease-out"
+        style={{ width: `${scrollProgress}%` }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center space-x-8">
