@@ -21,6 +21,7 @@ import {
   ALL_SEEDED_POST_SNAPSHOTS,
   INITIAL_JOBS,
   INITIAL_USAGE,
+  isSeedSnapshot,
 } from './seedData';
 import { calculateEngagementRate, normalizeTikTokUsername } from './formatters';
 import {
@@ -114,16 +115,30 @@ export class StorageService {
       }
     }
 
-    // Clean up any unrealistic dummy snapshots that had >1000 for intansuarkartika
+    // Global Cliff-Protection: Purge dummy seed snapshots for any account that has live scraped data
     let currentSnapshots = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
-    const hasUnrealisticIntan = currentSnapshots.some(
-      (s) => s.account_id === 'a1111111-1111-1111-1111-111111111111' && (s.fans || 0) > 1000
+    const accountsWithLiveSnaps = new Set(
+      currentSnapshots.filter((s) => !isSeedSnapshot(s)).map((s) => s.account_id)
     );
-    if (hasUnrealisticIntan) {
-      currentSnapshots = currentSnapshots.filter((s) => s.account_id !== 'a1111111-1111-1111-1111-111111111111');
-      const intanRealSnaps = ALL_ACCOUNT_SNAPSHOTS.filter((s) => s.account_id === 'a1111111-1111-1111-1111-111111111111');
-      currentSnapshots.push(...intanRealSnaps);
+
+    if (accountsWithLiveSnaps.size > 0) {
+      currentSnapshots = currentSnapshots.filter(
+        (s) => !accountsWithLiveSnaps.has(s.account_id) || !isSeedSnapshot(s)
+      );
       this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, currentSnapshots);
+    }
+
+    // Also replace any old high-number seed snapshots (>1000) with the calibrated realistic seeds
+    const hasHighNumberSeed = currentSnapshots.some(
+      (s) => isSeedSnapshot(s) && (s.fans || 0) > 1000
+    );
+    if (hasHighNumberSeed) {
+      const liveOnly = currentSnapshots.filter((s) => !isSeedSnapshot(s));
+      const nonLiveAccountIds = new Set(
+        INITIAL_ACCOUNTS.filter((a) => !accountsWithLiveSnaps.has(a.id)).map((a) => a.id)
+      );
+      const calibratedSeeds = ALL_ACCOUNT_SNAPSHOTS.filter((s) => nonLiveAccountIds.has(s.account_id));
+      this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, [...liveOnly, ...calibratedSeeds]);
     }
 
     if (!localStorage.getItem(STORAGE_KEYS.CONFIG)) {
@@ -225,9 +240,23 @@ export class StorageService {
 
     // Load account snapshots
     const allSnapshots = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
-    const accountSnapshots = allSnapshots
+    let accountSnapshots = allSnapshots
       .filter((s) => s.account_id === accountId)
       .sort((a, b) => new Date(a.captured_at).getTime() - new Date(b.captured_at).getTime());
+
+    // CLIFF DROP PROTECTION: If this account has any real/live snapshot, purge all dummy seed snapshots
+    const hasLiveSnapshot = accountSnapshots.some((s) => !isSeedSnapshot(s));
+    if (hasLiveSnapshot) {
+      accountSnapshots = accountSnapshots.filter((s) => !isSeedSnapshot(s));
+      // Sync cleanup back to localStorage so it stays clean
+      const remainingSeedSnaps = allSnapshots.filter((s) => s.account_id === accountId && isSeedSnapshot(s));
+      if (remainingSeedSnaps.length > 0) {
+        this.setItem(
+          STORAGE_KEYS.ACCOUNT_SNAPSHOTS,
+          allSnapshots.filter((s) => !(s.account_id === accountId && isSeedSnapshot(s)))
+        );
+      }
+    }
 
     const latestSnapshot = accountSnapshots.length > 0 ? accountSnapshots[accountSnapshots.length - 1] : null;
     const previousSnapshot = accountSnapshots.length > 1 ? accountSnapshots[accountSnapshots.length - 2] : null;
@@ -235,6 +264,8 @@ export class StorageService {
     let followersDiff: number | null = null;
     if (latestSnapshot?.fans !== null && latestSnapshot?.fans !== undefined && previousSnapshot?.fans !== null && previousSnapshot?.fans !== undefined) {
       followersDiff = latestSnapshot.fans - previousSnapshot.fans;
+    } else if (latestSnapshot?.fans !== null && latestSnapshot?.fans !== undefined && accountSnapshots.length === 1) {
+      followersDiff = 0; // Exactly 0 on initial single observation
     }
 
     // Load posts
@@ -408,13 +439,13 @@ export class StorageService {
         // Store new profile snapshot
         if (profileSnapshot) {
           let allSnaps = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
-          // Prune dummy snapshots for this account so real live numbers start clean
+          // Always completely purge all dummy seed snapshots for this account
           allSnaps = allSnaps.filter(
-            (s) => s.account_id !== accountId || (!s.id.includes('snap-intan-') && !s.id.includes('snap-rania-'))
+            (s) => s.account_id !== accountId || !isSeedSnapshot(s)
           );
 
           allSnaps.push({
-            id: 'snap-' + Date.now().toString(36),
+            id: 'live-' + Date.now().toString(36),
             account_id: accountId,
             sync_job_id: jobId,
             fans: profileSnapshot.fans,

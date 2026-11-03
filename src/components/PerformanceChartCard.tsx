@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import { TrendingUp, TrendingDown, Minus, Info, Users, BarChart3, Eye, Heart, Flame } from 'lucide-react';
 import { AccountSnapshot, PostWithSnapshot } from '../types';
+import { isSeedSnapshot } from '../lib/seedData';
 import {
   formatCompactNumber,
   formatExactNumber,
@@ -47,13 +48,47 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
       filtered = snapshotsHistory.filter((s) => now - new Date(s.captured_at).getTime() <= 30 * dayMs);
     }
 
-    return filtered
+    // Safety 1: If there are real live data points, drop any dummy seed points
+    const hasLive = filtered.some((s) => !isSeedSnapshot(s));
+    if (hasLive) {
+      filtered = filtered.filter((s) => !isSeedSnapshot(s));
+    }
+
+    // Safety 2: Anomaly Cliff Protection (reject legacy fictitious seed spikes)
+    if (filtered.length >= 2) {
+      for (let i = 1; i < filtered.length; i++) {
+        const prev = filtered[i - 1].fans ?? 0;
+        const curr = filtered[i].fans ?? 0;
+        if (prev > 1000 && curr < 200 && (prev - curr) / prev > 0.8) {
+          filtered = filtered.slice(i);
+          break;
+        }
+      }
+    }
+
+    const processed = filtered
       .filter((s) => typeof s.fans === 'number')
       .map((s) => ({
         rawDate: s.captured_at,
         displayDate: formatShortDateWIB(s.captured_at),
         followers: s.fans as number,
       }));
+
+    // If only 1 live observation exists, synthesize a baseline 12h prior with identical scale so curve renders a stable line
+    if (processed.length === 1) {
+      const single = processed[0];
+      const singleTime = new Date(single.rawDate).getTime();
+      return [
+        {
+          rawDate: new Date(singleTime - 12 * 60 * 60 * 1000).toISOString(),
+          displayDate: 'Awal Pantau',
+          followers: single.followers,
+        },
+        single,
+      ];
+    }
+
+    return processed;
   };
 
   const followersData = filterSnapshots();

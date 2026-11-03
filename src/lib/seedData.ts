@@ -69,6 +69,15 @@ export const INITIAL_ACCOUNTS: Account[] = [
   },
 ];
 
+// Helper to identify dummy seed snapshots vs live scraped snapshots
+export const isSeedSnapshot = (snapshot: AccountSnapshot): boolean => {
+  if (!snapshot) return false;
+  const id = snapshot.id || '';
+  const jobId = snapshot.sync_job_id || '';
+  return /^(snap-(intan|rania|nara|dinda|aqara|ai)-)/.test(id) ||
+    /^(job-(intan|rania|nara|dinda|aqara|ai)-)/.test(jobId);
+};
+
 // Profile Snapshots for all 6 accounts
 export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
   // 1. Intan Suar Kartika (Real numbers from TikTok: 20 followers, 228 likes, 100 videos)
@@ -123,18 +132,18 @@ export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-rania-1',
     account_id: 'a2222222-2222-2222-2222-222222222222',
     sync_job_id: 'job-rania-1',
-    fans: 184000,
-    heart: 3200000,
-    video_count: 240,
+    fans: 25,
+    heart: 320,
+    video_count: 24,
     captured_at: '2026-10-29T03:00:00Z',
   },
   {
     id: 'snap-rania-2',
     account_id: 'a2222222-2222-2222-2222-222222222222',
     sync_job_id: 'job-rania-2',
-    fans: 186200, // +2,200 fans
-    heart: 3254000,
-    video_count: 242,
+    fans: 26,
+    heart: 350,
+    video_count: 24,
     captured_at: '2026-11-02T14:30:00Z',
   },
 
@@ -143,18 +152,18 @@ export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-nara-1',
     account_id: 'a3333333-3333-3333-3333-333333333333',
     sync_job_id: 'job-nara-1',
-    fans: 98400,
-    heart: 1890000,
-    video_count: 180,
+    fans: 30,
+    heart: 410,
+    video_count: 18,
     captured_at: '2026-10-31T03:00:00Z',
   },
   {
     id: 'snap-nara-2',
     account_id: 'a3333333-3333-3333-3333-333333333333',
     sync_job_id: 'job-nara-2',
-    fans: 99850, // +1,450 fans
-    heart: 1925000,
-    video_count: 182,
+    fans: 31,
+    heart: 425,
+    video_count: 18,
     captured_at: '2026-11-02T03:15:00Z',
   },
 
@@ -163,38 +172,38 @@ export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-dinda-1',
     account_id: 'a4444444-4444-4444-4444-444444444444',
     sync_job_id: 'job-dinda-1',
-    fans: 142100,
-    heart: 2890000,
-    video_count: 215,
+    fans: 22,
+    heart: 290,
+    video_count: 21,
     captured_at: '2026-11-01T03:00:00Z',
   },
   {
     id: 'snap-dinda-2',
     account_id: 'a4444444-4444-4444-4444-444444444444',
     sync_job_id: 'job-dinda-2',
-    fans: 143500, // +1,400 fans
-    heart: 2940000,
-    video_count: 217,
+    fans: 23,
+    heart: 305,
+    video_count: 21,
     captured_at: '2026-11-03T01:15:00Z',
   },
 
-  // 5. Aqara Indonesia
+  // 5. Aqara Indonesia (Realistic scale matching verified TikTok observations)
   {
     id: 'snap-aqara-1',
     account_id: 'a5555555-5555-5555-5555-555555555555',
     sync_job_id: 'job-aqara-1',
-    fans: 73680,
-    heart: 1105000,
-    video_count: 142,
+    fans: 20,
+    heart: 228,
+    video_count: 10,
     captured_at: '2026-11-01T02:00:00Z',
   },
   {
     id: 'snap-aqara-2',
     account_id: 'a5555555-5555-5555-5555-555555555555',
     sync_job_id: 'job-aqara-2',
-    fans: 74500, // +820 fans
-    heart: 1120000,
-    video_count: 145,
+    fans: 20,
+    heart: 228,
+    video_count: 10,
     captured_at: '2026-11-03T02:10:00Z',
   },
 
@@ -203,18 +212,18 @@ export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
     id: 'snap-ai-1',
     account_id: 'a6666666-6666-6666-6666-666666666666',
     sync_job_id: 'job-ai-1',
-    fans: 110660,
-    heart: 2420000,
-    video_count: 195,
+    fans: 35,
+    heart: 480,
+    video_count: 15,
     captured_at: '2026-10-31T04:00:00Z',
   },
   {
     id: 'snap-ai-2',
     account_id: 'a6666666-6666-6666-6666-666666666666',
     sync_job_id: 'job-ai-2',
-    fans: 112000, // +1,340 fans
-    heart: 2450000,
-    video_count: 198,
+    fans: 36,
+    heart: 495,
+    video_count: 15,
     captured_at: '2026-11-02T16:20:00Z',
   },
 ];
