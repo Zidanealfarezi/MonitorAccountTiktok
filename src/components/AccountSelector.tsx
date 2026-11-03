@@ -44,10 +44,10 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
         {/* Action Buttons: Clean & Full-width on Mobile */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
           {/* Progress hint if syncing */}
-          {isSyncing && syncProgressMessage && (
-            <div className="text-xs text-blue-700 font-medium flex items-center space-x-1.5 animate-pulse bg-blue-50 px-3 py-1.5 rounded-full border border-blue-200/80 shadow-2xs">
-              <RefreshCw className="w-3.5 h-3.5 animate-spin shrink-0 text-blue-600" />
-              <span className="truncate">{syncProgressMessage}</span>
+          {isSyncing && (
+            <div className="text-xs text-indigo-800 font-bold flex items-center space-x-2 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 px-3.5 py-1.5 rounded-full border border-indigo-200/90 shadow-sm animate-pulse">
+              <span className="text-sm animate-mascot-bounce">🕵️‍♂️</span>
+              <span className="truncate">{syncProgressMessage || 'Sedang memproses data...'}</span>
             </div>
           )}
 
@@ -56,11 +56,15 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             <button
               onClick={onTriggerSyncAll}
               disabled={isSyncing || isBudgetExceeded}
-              className="inline-flex items-center justify-center space-x-2.5 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 animate-gradient hover:animate-none hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/20 hover:ring-blue-500/40 hover:scale-[1.02] transition-all duration-300 active:scale-95 disabled:opacity-50 order-1 sm:order-2 w-full sm:w-auto cursor-pointer"
+              className={`inline-flex items-center justify-center space-x-2.5 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 animate-gradient hover:animate-none hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/20 hover:ring-blue-500/40 hover:scale-[1.02] transition-all duration-300 active:scale-95 disabled:opacity-60 order-1 sm:order-2 w-full sm:w-auto cursor-pointer ${
+                isSyncing ? 'animate-pulse opacity-85 cursor-wait' : ''
+              }`}
               title="Ambil data seluruh akun sekaligus secara berurutan"
             >
-              <Layers className="w-4 h-4 text-blue-100 shrink-0" />
-              <span className="tracking-wide">Ambil Semua Data</span>
+              <Layers className={`w-4 h-4 text-blue-100 shrink-0 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span className="tracking-wide">
+                {isSyncing ? 'Sedang Mengambil...' : 'Ambil Semua Data'}
+              </span>
               <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-[10px] font-mono font-extrabold text-white">
                 {accounts.length} Akun
               </span>

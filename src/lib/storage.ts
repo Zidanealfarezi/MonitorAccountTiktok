@@ -751,14 +751,16 @@ export class StorageService {
    * Trigger sync for all accounts sequentially
    */
   public static async triggerSyncAll(
-    onProgress?: (accountName: string, current: number, total: number) => void
+    onProgress?: (accountName: string, current: number, total: number, username?: string, stepMsg?: string) => void
   ): Promise<void> {
     const accounts = this.getAccounts();
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
-      onProgress?.(acc.display_name, i + 1, accounts.length);
+      onProgress?.(acc.display_name, i + 1, accounts.length, acc.username, 'Memulai...');
       try {
-        await this.triggerSync(acc.id);
+        await this.triggerSync(acc.id, (subMsg) => {
+          onProgress?.(acc.display_name, i + 1, accounts.length, acc.username, subMsg);
+        });
       } catch (err: unknown) {
         console.warn(`Gagal sinkronisasi @${acc.username}:`, err);
       }

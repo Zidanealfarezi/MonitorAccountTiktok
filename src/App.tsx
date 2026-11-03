@@ -11,6 +11,7 @@ import { StorageService } from './lib/storage';
 import { Account, AccountDashboardData } from './types';
 import { AlertCircle, CheckCircle2, ChevronUp } from 'lucide-react';
 import { ScrollReveal } from './components/ScrollReveal';
+import { CuteSyncAlert } from './components/CuteSyncAlert';
 
 const AUTO_SYNC_MIN_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes safety guard against rapid F5 spam
 const LAST_AUTO_SYNC_KEY = 'tiktok_monitor_last_auto_sync';
@@ -21,6 +22,23 @@ export const App: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<AccountDashboardData | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [syncProgress, setSyncProgress] = useState<string>('');
+  const [syncDetails, setSyncDetails] = useState<{
+    isOpen: boolean;
+    type: 'all' | 'single' | 'auto';
+    currentAccountName: string;
+    currentUsername: string;
+    currentIndex: number;
+    totalAccounts: number;
+    stepMessage: string;
+  }>({
+    isOpen: false,
+    type: 'all',
+    currentAccountName: '',
+    currentUsername: '',
+    currentIndex: 1,
+    totalAccounts: 1,
+    stepMessage: '',
+  });
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
@@ -54,10 +72,28 @@ export const App: React.FC = () => {
     localStorage.setItem(LAST_AUTO_SYNC_KEY, new Date().toISOString());
     setIsSyncing(true);
     setSyncProgress('Auto-sync: Mengambil data terbaru...');
+    setSyncDetails({
+      isOpen: true,
+      type: 'auto',
+      currentAccountName: accList[0]?.display_name || '',
+      currentUsername: accList[0]?.username || '',
+      currentIndex: 1,
+      totalAccounts: accList.length,
+      stepMessage: 'Auto-sync: Mengambil data terbaru...',
+    });
 
     try {
-      await StorageService.triggerSyncAll((accName, curr, total) => {
+      await StorageService.triggerSyncAll((accName, curr, total, username, stepMsg) => {
         setSyncProgress(`Auto-sync: ${accName} (${curr}/${total})...`);
+        setSyncDetails({
+          isOpen: true,
+          type: 'auto',
+          currentAccountName: accName,
+          currentUsername: username || '',
+          currentIndex: curr,
+          totalAccounts: total,
+          stepMessage: stepMsg || `Mengambil data ${accName}...`,
+        });
       });
 
       const refreshed = StorageService.getAccounts();
@@ -115,12 +151,26 @@ export const App: React.FC = () => {
   const handleTriggerSync = async () => {
     if (!selectedAccountId || isSyncing) return;
 
+    const currentAcc = accounts.find((a) => a.id === selectedAccountId);
     setIsSyncing(true);
     setSyncProgress('Menghubungkan ke Apify...');
+    setSyncDetails({
+      isOpen: true,
+      type: 'single',
+      currentAccountName: currentAcc?.display_name || '',
+      currentUsername: currentAcc?.username || '',
+      currentIndex: 1,
+      totalAccounts: 1,
+      stepMessage: 'Menghubungkan ke Apify...',
+    });
 
     try {
       const updated = await StorageService.triggerSync(selectedAccountId, (msg) => {
         setSyncProgress(msg);
+        setSyncDetails((prev) => ({
+          ...prev,
+          stepMessage: msg,
+        }));
       });
       setDashboardData(updated);
       setAccounts(StorageService.getAccounts());
@@ -140,10 +190,28 @@ export const App: React.FC = () => {
 
     setIsSyncing(true);
     setSyncProgress('Memulai sinkronisasi seluruh akun...');
+    setSyncDetails({
+      isOpen: true,
+      type: 'all',
+      currentAccountName: accounts[0]?.display_name || '',
+      currentUsername: accounts[0]?.username || '',
+      currentIndex: 1,
+      totalAccounts: accounts.length,
+      stepMessage: 'Memulai sinkronisasi seluruh akun...',
+    });
 
     try {
-      await StorageService.triggerSyncAll((accName, curr, total) => {
+      await StorageService.triggerSyncAll((accName, curr, total, username, stepMsg) => {
         setSyncProgress(`Mengambil ${accName} (${curr}/${total})...`);
+        setSyncDetails({
+          isOpen: true,
+          type: 'all',
+          currentAccountName: accName,
+          currentUsername: username || '',
+          currentIndex: curr,
+          totalAccounts: total,
+          stepMessage: stepMsg || `Mengambil data ${accName}...`,
+        });
       });
 
       localStorage.setItem(LAST_AUTO_SYNC_KEY, new Date().toISOString());
@@ -267,6 +335,19 @@ export const App: React.FC = () => {
           <span className="font-mono text-slate-400">Penyedia: Apify Scraper • Zona: WIB</span>
         </div>
       </footer>
+
+      {/* Cute Interactive Mascot Waiting Alert */}
+      <CuteSyncAlert
+        isOpen={syncDetails.isOpen}
+        isSyncing={isSyncing}
+        type={syncDetails.type}
+        currentAccountName={syncDetails.currentAccountName}
+        currentUsername={syncDetails.currentUsername}
+        currentIndex={syncDetails.currentIndex}
+        totalAccounts={syncDetails.totalAccounts}
+        stepMessage={syncDetails.stepMessage}
+        onDismiss={() => setSyncDetails((prev) => ({ ...prev, isOpen: false }))}
+      />
 
       {/* Settings Modal */}
       <SettingsModal
