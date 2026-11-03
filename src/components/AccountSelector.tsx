@@ -159,7 +159,7 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             <span className="hidden sm:inline text-slate-300">•</span>
             <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Auto-sync aktif (tiap 2 jam)</span>
+              <span>Auto-sync aktif (setiap kali dibuka)</span>
             </span>
           </div>
         </div>
