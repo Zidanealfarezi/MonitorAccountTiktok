@@ -1,0 +1,9 @@
+name = "tiktok-monitor"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-03"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+MAX_CHARGE_PER_RUN_USD = "0.05"
+MONTHLY_BUDGET_CAP_USD = "4.50"
+WARNING_THRESHOLD_USD = "4.00"
