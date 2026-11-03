@@ -12,6 +12,9 @@ import { Account, AccountDashboardData } from './types';
 import { AlertCircle, CheckCircle2, ChevronUp } from 'lucide-react';
 import { ScrollReveal } from './components/ScrollReveal';
 
+const AUTO_SYNC_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
+const LAST_AUTO_SYNC_KEY = 'tiktok_monitor_last_auto_sync';
+
 export const App: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<string>('');
@@ -30,7 +33,55 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Load initial accounts
+  // Smart Auto-Sync with 2-Hour Cooldown
+  const checkAndTriggerSmartAutoSync = async (accList: Account[], targetId: string) => {
+    const usage = StorageService.getMonthlyUsage();
+    if (usage.isBudgetExceeded) return;
+
+    const now = Date.now();
+    const lastSyncStr = localStorage.getItem(LAST_AUTO_SYNC_KEY);
+
+    let needsSync = false;
+
+    if (!lastSyncStr) {
+      // If no recorded auto-sync timestamp, check account last_sync_at dates
+      const hasRecentSync = accList.some((a) => {
+        if (!a.last_sync_at) return false;
+        const diff = now - new Date(a.last_sync_at).getTime();
+        return diff < AUTO_SYNC_COOLDOWN_MS;
+      });
+      needsSync = !hasRecentSync;
+    } else {
+      const elapsed = now - new Date(lastSyncStr).getTime();
+      if (elapsed >= AUTO_SYNC_COOLDOWN_MS) {
+        needsSync = true;
+      }
+    }
+
+    if (needsSync) {
+      localStorage.setItem(LAST_AUTO_SYNC_KEY, new Date().toISOString());
+      setIsSyncing(true);
+      setSyncProgress('Smart Auto-sync: Memperbarui data...');
+
+      try {
+        await StorageService.triggerSyncAll((accName, curr, total) => {
+          setSyncProgress(`Auto-sync: ${accName} (${curr}/${total})...`);
+        });
+
+        const refreshed = StorageService.getAccounts();
+        setAccounts(refreshed);
+        loadDashboard(targetId);
+        showToast('success', 'Smart Auto-sync: Data 6 akun telah diperbarui');
+      } catch (err: unknown) {
+        console.error('Smart Auto-sync error:', err);
+      } finally {
+        setIsSyncing(false);
+        setSyncProgress('');
+      }
+    }
+  };
+
+  // Load initial accounts and check auto-sync
   const loadAccountsData = () => {
     const accs = StorageService.getAccounts();
     setAccounts(accs);
@@ -40,6 +91,9 @@ export const App: React.FC = () => {
       const targetId = currentExists ? selectedAccountId : accs[0].id;
       setSelectedAccountId(targetId);
       loadDashboard(targetId);
+
+      // Trigger Smart Auto-Sync if data is older than 2 hours
+      checkAndTriggerSmartAutoSync(accs, targetId);
     }
   };
 
@@ -101,6 +155,7 @@ export const App: React.FC = () => {
         setSyncProgress(`Mengambil ${accName} (${curr}/${total})...`);
       });
 
+      localStorage.setItem(LAST_AUTO_SYNC_KEY, new Date().toISOString());
       setAccounts(StorageService.getAccounts());
       loadDashboard(selectedAccountId);
       showToast('success', 'Berhasil memperbarui data seluruh akun!');

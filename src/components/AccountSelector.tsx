@@ -145,14 +145,21 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
               <ExternalLink className="w-3 h-3 ml-0.5 opacity-60" />
             </a>
           </div>
-          <div className="flex items-center space-x-1 text-slate-400">
-            <Clock className="w-3.5 h-3.5 shrink-0" />
-            <span>
-              {selectedAccount.last_sync_at ? (
-                <>Data diambil pada: <strong className="text-slate-700 font-mono">{formatDateWIB(selectedAccount.last_sync_at)}</strong></>
-              ) : (
-                <span className="text-amber-600 font-medium">Belum ada pengamatan</span>
-              )}
+          <div className="flex items-center space-x-2 text-slate-400 flex-wrap gap-y-1">
+            <div className="flex items-center space-x-1">
+              <Clock className="w-3.5 h-3.5 shrink-0" />
+              <span>
+                {selectedAccount.last_sync_at ? (
+                  <>Data diambil: <strong className="text-slate-700 font-mono">{formatDateWIB(selectedAccount.last_sync_at)}</strong></>
+                ) : (
+                  <span className="text-amber-600 font-medium">Belum ada pengamatan</span>
+                )}
+              </span>
+            </div>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Auto-sync aktif (tiap 2 jam)</span>
             </span>
           </div>
         </div>
