@@ -448,6 +448,58 @@ export class StorageService {
         this.setItem(STORAGE_KEYS.POSTS, allPosts);
         this.setItem(STORAGE_KEYS.POST_SNAPSHOTS, allPostSnaps);
 
+        // Sync to Supabase if configured
+        const supabase = getSupabaseClient(config.supabaseUrl, config.supabaseAnonKey);
+        if (supabase) {
+          try {
+            await supabase.from('accounts').upsert({
+              id: account.id,
+              username: account.username,
+              display_name: account.display_name,
+              tiktok_id: account.tiktok_id,
+              avatar_url: account.avatar_url,
+              status: account.status,
+              last_sync_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            });
+
+            if (profileSnapshot) {
+              await supabase.from('account_snapshots').insert({
+                account_id: accountId,
+                fans: profileSnapshot.fans,
+                heart: profileSnapshot.heart,
+                video_count: profileSnapshot.videoCount,
+                captured_at: new Date().toISOString(),
+              });
+            }
+
+            for (const p of posts) {
+              await supabase.from('posts').upsert({
+                id: p.id,
+                account_id: accountId,
+                caption: p.caption,
+                create_time_iso: p.createTimeIso,
+                web_video_url: p.webVideoUrl,
+                is_slideshow: p.isSlideshow,
+                is_pinned: p.isPinned,
+                cover_url: p.coverUrl,
+                updated_at: new Date().toISOString(),
+              });
+
+              await supabase.from('post_snapshots').insert({
+                post_id: p.id,
+                play_count: p.playCount,
+                digg_count: p.diggCount,
+                comment_count: p.commentCount,
+                share_count: p.shareCount,
+                captured_at: new Date().toISOString(),
+              });
+            }
+          } catch (sbErr) {
+            console.warn('Supabase auto-sync notice:', sbErr);
+          }
+        }
+
         const charged = runStatus.usageTotalUsd || ESTIMATED_COST_PER_RUN_USD;
         newJob.status = posts.length > 0 ? 'succeeded' : 'partial';
         newJob.results_count = posts.length;
@@ -594,6 +646,84 @@ export class StorageService {
         console.warn(`Gagal sinkronisasi @${acc.username}:`, err);
       }
     }
+  }
+
+  /**
+   * Push all current local data (accounts, snapshots, posts) to Supabase
+   */
+  public static async pushLocalDataToSupabase(
+    url?: string,
+    key?: string
+  ): Promise<{ accountsCount: number; postsCount: number }> {
+    const config = this.getConfig();
+    const finalUrl = url || config.supabaseUrl;
+    const finalKey = key || config.supabaseAnonKey;
+    const supabase = getSupabaseClient(finalUrl, finalKey);
+
+    if (!supabase) {
+      throw new Error('Supabase URL atau Anon Key belum diisi.');
+    }
+
+    // 1. Push Accounts
+    const accounts = this.getAccounts();
+    for (const acc of accounts) {
+      const { error } = await supabase.from('accounts').upsert({
+        id: acc.id,
+        username: acc.username,
+        display_name: acc.display_name,
+        tiktok_id: acc.tiktok_id,
+        avatar_url: acc.avatar_url,
+        status: acc.status,
+        last_sync_at: acc.last_sync_at,
+        updated_at: acc.updated_at,
+      });
+      if (error) console.warn('Supabase accounts upsert notice:', error.message);
+    }
+
+    // 2. Push Account Snapshots
+    const allSnaps = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+    for (const snap of allSnaps) {
+      await supabase.from('account_snapshots').insert({
+        id: snap.id,
+        account_id: snap.account_id,
+        fans: snap.fans,
+        heart: snap.heart,
+        video_count: snap.video_count,
+        captured_at: snap.captured_at,
+      }).select().maybeSingle();
+    }
+
+    // 3. Push Posts
+    const allPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
+    for (const post of allPosts) {
+      await supabase.from('posts').upsert({
+        id: post.id,
+        account_id: post.account_id,
+        caption: post.caption,
+        create_time_iso: post.create_time_iso,
+        web_video_url: post.web_video_url,
+        is_slideshow: post.is_slideshow,
+        is_pinned: post.is_pinned,
+        cover_url: post.cover_url,
+        updated_at: post.updated_at,
+      });
+    }
+
+    // 4. Push Post Snapshots
+    const allPostSnaps = this.getItem<PostSnapshot[]>(STORAGE_KEYS.POST_SNAPSHOTS, []);
+    for (const ps of allPostSnaps) {
+      await supabase.from('post_snapshots').upsert({
+        id: ps.id,
+        post_id: ps.post_id,
+        play_count: ps.play_count,
+        digg_count: ps.digg_count,
+        comment_count: ps.comment_count,
+        share_count: ps.share_count,
+        captured_at: ps.captured_at,
+      });
+    }
+
+    return { accountsCount: accounts.length, postsCount: allPosts.length };
   }
 
   // Reset to initial seed state

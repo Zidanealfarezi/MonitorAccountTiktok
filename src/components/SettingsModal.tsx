@@ -15,6 +15,7 @@ import {
 import { Account, AppConfig } from '../types';
 import { StorageService } from '../lib/storage';
 import { formatCurrencyUsd, formatDateWIB, normalizeTikTokUsername } from '../lib/formatters';
+import { getSupabaseClient } from '../lib/supabase';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -39,6 +40,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   // Config State
   const [config, setConfig] = useState<AppConfig>(StorageService.getConfig());
   const [configSaved, setConfigSaved] = useState(false);
+  const [testSupabaseState, setTestSupabaseState] = useState<{ status: 'idle' | 'loading' | 'success' | 'error'; message: string }>({
+    status: 'idle',
+    message: '',
+  });
+  const [pushSupabaseState, setPushSupabaseState] = useState<{ status: 'idle' | 'loading' | 'success' | 'error'; message: string }>({
+    status: 'idle',
+    message: '',
+  });
 
   if (!isOpen) return null;
 
@@ -80,6 +89,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setConfigSaved(true);
     setTimeout(() => setConfigSaved(false), 2500);
     onAccountsUpdated();
+  };
+
+  const handleTestSupabase = async () => {
+    if (!config.supabaseUrl || !config.supabaseAnonKey) {
+      setTestSupabaseState({ status: 'error', message: 'Isi URL dan Anon Key terlebih dahulu' });
+      return;
+    }
+    setTestSupabaseState({ status: 'loading', message: 'Menguji koneksi ke Supabase...' });
+    try {
+      const client = getSupabaseClient(config.supabaseUrl, config.supabaseAnonKey);
+      if (!client) throw new Error('Konfigurasi klien gagal');
+      const { error } = await client.from('accounts').select('id', { count: 'exact', head: true });
+      if (error) throw error;
+      setTestSupabaseState({ status: 'success', message: 'Koneksi database Supabase berhasil & tabel terverifikasi!' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Gagal terhubung ke Supabase. Pastikan file migrasi SQL sudah dijalankan.';
+      setTestSupabaseState({ status: 'error', message: msg });
+    }
+  };
+
+  const handlePushToSupabase = async () => {
+    setPushSupabaseState({ status: 'loading', message: 'Mengirim data ke Supabase...' });
+    try {
+      const res = await StorageService.pushLocalDataToSupabase(config.supabaseUrl, config.supabaseAnonKey);
+      setPushSupabaseState({
+        status: 'success',
+        message: `Berhasil upload ${res.accountsCount} akun & ${res.postsCount} postingan ke Supabase!`,
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Gagal mengirim data ke Supabase';
+      setPushSupabaseState({ status: 'error', message: msg });
+    }
   };
 
   // Reset Data Handler
@@ -384,6 +425,45 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onChange={(e) => setConfig({ ...config, supabaseAnonKey: e.target.value })}
                     className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-white placeholder-slate-500 font-mono"
                   />
+
+                  {/* Supabase Actions */}
+                  <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                    <button
+                      type="button"
+                      onClick={handleTestSupabase}
+                      disabled={testSupabaseState.status === 'loading'}
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium border border-slate-700 transition"
+                    >
+                      {testSupabaseState.status === 'loading' ? 'Menguji...' : 'Tes Koneksi Supabase'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handlePushToSupabase}
+                      disabled={pushSupabaseState.status === 'loading'}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900/80 text-emerald-300 text-[11px] font-medium border border-emerald-800/60 transition"
+                    >
+                      {pushSupabaseState.status === 'loading' ? 'Mengunggah...' : 'Upload Data Lokal ke Supabase'}
+                    </button>
+                  </div>
+
+                  {testSupabaseState.message && (
+                    <p
+                      className={`text-[11px] mt-1.5 font-medium ${
+                        testSupabaseState.status === 'success' ? 'text-emerald-400' : 'text-rose-400'
+                      }`}
+                    >
+                      {testSupabaseState.message}
+                    </p>
+                  )}
+                  {pushSupabaseState.message && (
+                    <p
+                      className={`text-[11px] mt-1 font-medium ${
+                        pushSupabaseState.status === 'success' ? 'text-emerald-400' : 'text-rose-400'
+                      }`}
+                    >
+                      {pushSupabaseState.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

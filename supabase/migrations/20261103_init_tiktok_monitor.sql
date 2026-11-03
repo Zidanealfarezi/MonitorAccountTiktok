@@ -132,29 +132,38 @@ ON public.accounts FOR ALL
 USING (auth.uid() = user_id OR user_id IS NULL)
 WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
-CREATE POLICY "Users can read sync jobs for their accounts" 
+CREATE POLICY "Users can manage sync jobs" 
 ON public.sync_jobs FOR ALL 
-USING (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = sync_jobs.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)));
+USING (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = sync_jobs.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)))
+WITH CHECK (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = sync_jobs.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)));
 
-CREATE POLICY "Users can read account snapshots" 
+CREATE POLICY "Users can manage account snapshots" 
 ON public.account_snapshots FOR ALL 
-USING (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = account_snapshots.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)));
+USING (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = account_snapshots.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)))
+WITH CHECK (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = account_snapshots.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)));
 
-CREATE POLICY "Users can read posts" 
+CREATE POLICY "Users can manage posts" 
 ON public.posts FOR ALL 
-USING (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = posts.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)));
+USING (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = posts.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)))
+WITH CHECK (EXISTS (SELECT 1 FROM public.accounts WHERE accounts.id = posts.account_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)));
 
-CREATE POLICY "Users can read post snapshots" 
+CREATE POLICY "Users can manage post snapshots" 
 ON public.post_snapshots FOR ALL 
 USING (EXISTS (
     SELECT 1 FROM public.posts 
     JOIN public.accounts ON accounts.id = posts.account_id
     WHERE posts.id = post_snapshots.post_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)
+))
+WITH CHECK (EXISTS (
+    SELECT 1 FROM public.posts 
+    JOIN public.accounts ON accounts.id = posts.account_id
+    WHERE posts.id = post_snapshots.post_id AND (accounts.user_id = auth.uid() OR accounts.user_id IS NULL)
 ));
 
-CREATE POLICY "Users can read usage ledger" 
+CREATE POLICY "Users can manage usage ledger" 
 ON public.usage_ledger FOR ALL 
-USING (auth.uid() = user_id OR user_id IS NULL);
+USING (auth.uid() = user_id OR user_id IS NULL)
+WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
 -- 8. Seed Initial 6 Accounts (if not exists)
 INSERT INTO public.accounts (id, username, display_name, status)
