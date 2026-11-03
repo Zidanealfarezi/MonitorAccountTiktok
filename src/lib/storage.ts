@@ -23,6 +23,12 @@ import {
   INITIAL_USAGE,
   RANIA_SNAPSHOTS,
   NARA_SNAPSHOTS,
+  AQARA_SNAPSHOTS,
+  AI_ACADEMY_SNAPSHOTS,
+  AQARA_POSTS,
+  AQARA_POST_SNAPSHOTS,
+  AI_ACADEMY_POSTS,
+  AI_ACADEMY_POST_SNAPSHOTS,
 } from './seedData';
 import { calculateEngagementRate, normalizeTikTokUsername } from './formatters';
 import {
@@ -75,19 +81,53 @@ export class StorageService {
     }
   }
 
-  // Initialize seed data if storage is empty
+  // Initialize seed data if storage is empty, or merge missing default accounts
   public static init(): void {
-    if (!localStorage.getItem(STORAGE_KEYS.ACCOUNTS)) {
+    const existingAccounts = this.getItem<Account[]>(STORAGE_KEYS.ACCOUNTS, []);
+
+    if (existingAccounts.length === 0) {
       this.setItem(STORAGE_KEYS.ACCOUNTS, INITIAL_ACCOUNTS);
       this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, [
         ...INTAN_SNAPSHOTS,
         ...RANIA_SNAPSHOTS,
         ...NARA_SNAPSHOTS,
+        ...AQARA_SNAPSHOTS,
+        ...AI_ACADEMY_SNAPSHOTS,
       ]);
-      this.setItem(STORAGE_KEYS.POSTS, INTAN_POSTS);
-      this.setItem(STORAGE_KEYS.POST_SNAPSHOTS, INTAN_POST_SNAPSHOTS);
+      this.setItem(STORAGE_KEYS.POSTS, [...INTAN_POSTS, ...AQARA_POSTS, ...AI_ACADEMY_POSTS]);
+      this.setItem(STORAGE_KEYS.POST_SNAPSHOTS, [
+        ...INTAN_POST_SNAPSHOTS,
+        ...AQARA_POST_SNAPSHOTS,
+        ...AI_ACADEMY_POST_SNAPSHOTS,
+      ]);
       this.setItem(STORAGE_KEYS.SYNC_JOBS, INITIAL_JOBS);
       this.setItem(STORAGE_KEYS.USAGE_LEDGER, INITIAL_USAGE);
+    } else {
+      // Merge any new default accounts (e.g. aqara.indonesia, the.ai.x.academy)
+      const missingAccounts = INITIAL_ACCOUNTS.filter(
+        (initAcc) => !existingAccounts.some((acc) => acc.username === initAcc.username)
+      );
+
+      if (missingAccounts.length > 0) {
+        this.setItem(STORAGE_KEYS.ACCOUNTS, [...existingAccounts, ...missingAccounts]);
+
+        const allSnapshots = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+        this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, [
+          ...allSnapshots,
+          ...AQARA_SNAPSHOTS,
+          ...AI_ACADEMY_SNAPSHOTS,
+        ]);
+
+        const allPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
+        this.setItem(STORAGE_KEYS.POSTS, [...allPosts, ...AQARA_POSTS, ...AI_ACADEMY_POSTS]);
+
+        const allPostSnaps = this.getItem<PostSnapshot[]>(STORAGE_KEYS.POST_SNAPSHOTS, []);
+        this.setItem(STORAGE_KEYS.POST_SNAPSHOTS, [
+          ...allPostSnaps,
+          ...AQARA_POST_SNAPSHOTS,
+          ...AI_ACADEMY_POST_SNAPSHOTS,
+        ]);
+      }
     }
 
     if (!localStorage.getItem(STORAGE_KEYS.CONFIG)) {

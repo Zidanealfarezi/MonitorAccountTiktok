@@ -37,7 +37,7 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
       </div>
 
       {/* Grid of Accounts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {accounts.map((acc) => {
           const isSelected = acc.id === selectedAccountId;
           const hasData = Boolean(acc.last_sync_at);
