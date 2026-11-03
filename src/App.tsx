@@ -84,6 +84,31 @@ export const App: React.FC = () => {
     }
   };
 
+  // Trigger sync for all accounts sequentially
+  const handleTriggerSyncAll = async () => {
+    if (isSyncing) return;
+
+    setIsSyncing(true);
+    setSyncProgress('Memulai sinkronisasi seluruh akun...');
+
+    try {
+      await StorageService.triggerSyncAll((accName, curr, total) => {
+        setSyncProgress(`Mengambil ${accName} (${curr}/${total})...`);
+      });
+
+      // Reload accounts and current dashboard
+      setAccounts(StorageService.getAccounts());
+      loadDashboard(selectedAccountId);
+      showToast('success', 'Berhasil memperbarui data seluruh akun!');
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : 'Gagal sinkronisasi';
+      showToast('error', errorMsg);
+    } finally {
+      setIsSyncing(false);
+      setSyncProgress('');
+    }
+  };
+
   const usage = StorageService.getMonthlyUsage();
 
   return (
@@ -126,11 +151,13 @@ export const App: React.FC = () => {
         {/* 2. Sync Control Banner */}
         {dashboardData && (
           <SyncControl
+            currentUsername={dashboardData.account.username}
             lastSyncAt={dashboardData.lastSyncAt}
             isSyncing={isSyncing}
             syncProgressMessage={syncProgress}
             isBudgetExceeded={usage.isBudgetExceeded}
             onTriggerSync={handleTriggerSync}
+            onTriggerSyncAll={handleTriggerSyncAll}
           />
         )}
 

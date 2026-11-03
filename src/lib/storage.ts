@@ -376,7 +376,12 @@ export class StorageService {
 
         // Store new profile snapshot
         if (profileSnapshot) {
-          const allSnaps = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+          let allSnaps = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+          // Prune dummy snapshots for this account so real live numbers start clean
+          allSnaps = allSnaps.filter(
+            (s) => s.account_id !== accountId || (!s.id.includes('snap-intan-') && !s.id.includes('snap-rania-'))
+          );
+
           allSnaps.push({
             id: 'snap-' + Date.now().toString(36),
             account_id: accountId,
@@ -397,8 +402,9 @@ export class StorageService {
           }
         }
 
-        // Store posts and post snapshots
-        const allPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
+        // Store posts and post snapshots (pruning old dummy posts for this account)
+        let allPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
+        allPosts = allPosts.filter((p) => p.account_id !== accountId);
         const allPostSnaps = this.getItem<PostSnapshot[]>(STORAGE_KEYS.POST_SNAPSHOTS, []);
 
         for (const p of posts) {
@@ -570,6 +576,24 @@ export class StorageService {
     }
 
     return this.getDashboardData(accountId);
+  }
+
+  /**
+   * Trigger sync for all accounts sequentially
+   */
+  public static async triggerSyncAll(
+    onProgress?: (accountName: string, current: number, total: number) => void
+  ): Promise<void> {
+    const accounts = this.getAccounts();
+    for (let i = 0; i < accounts.length; i++) {
+      const acc = accounts[i];
+      onProgress?.(acc.display_name, i + 1, accounts.length);
+      try {
+        await this.triggerSync(acc.id);
+      } catch (err: unknown) {
+        console.warn(`Gagal sinkronisasi @${acc.username}:`, err);
+      }
+    }
   }
 
   // Reset to initial seed state
