@@ -127,28 +127,28 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
   }));
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between card-lift animate-fade-in-up [animation-delay:200ms]">
+    <div className="rounded-2xl bg-white border-2 border-slate-900 p-4 sm:p-6 shadow-[4px_4px_0px_#0f172a] hover:shadow-[5px_5px_0px_#0f172a] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex flex-col justify-between transition-all duration-200 animate-fade-in-up [animation-delay:200ms]">
       {/* Header with Title and Mode Switchers */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
         <div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-base font-bold text-slate-900 tracking-tight">
+            <h3 className="text-base font-black text-slate-900 tracking-tight">
               Performance Overview
             </h3>
             {activeChart === 'posts' && postMetric === 'views' && (
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-mono font-semibold bg-blue-50 text-blue-700 border border-blue-200 flex items-center space-x-1">
-                <Eye className="w-3 h-3 text-blue-600" />
+              <span className="text-xs px-2.5 py-0.5 rounded-full font-mono font-black bg-amber-100 text-amber-950 border border-slate-900 flex items-center space-x-1 shadow-2xs">
+                <Eye className="w-3 h-3 text-amber-900" />
                 <span>{formatCompactNumber(totalPostViews)} Views</span>
               </span>
             )}
             {activeChart === 'followers' && hasEnoughFollowerData && (
               <span
-                className={`text-xs px-2 py-0.5 rounded-full font-mono flex items-center space-x-1 ${
+                className={`text-xs px-2 py-0.5 rounded-full font-mono flex items-center space-x-1 border border-slate-900 shadow-2xs ${
                   deltaFollowers > 0
-                    ? 'bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200'
+                    ? 'bg-emerald-300 text-slate-950 font-black'
                     : deltaFollowers < 0
-                    ? 'bg-rose-50 text-rose-700 font-semibold border border-rose-200'
-                    : 'bg-slate-100 text-slate-600'
+                    ? 'bg-rose-300 text-slate-950 font-black'
+                    : 'bg-slate-200 text-slate-800 font-bold'
                 }`}
               >
                 {deltaFollowers > 0 ? (
@@ -184,23 +184,23 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
         {/* Action Controls: Structured and balanced on mobile */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           {/* Main Chart Switcher Pill (Views 10 Video vs Kurva Followers) */}
-          <div className="grid grid-cols-2 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+          <div className="grid grid-cols-2 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-amber-50/80 border-2 border-slate-900 p-1 rounded-2xl shadow-[2px_2px_0px_#0f172a] text-xs">
             <button
               onClick={() => setActiveChart('posts')}
-              className={`px-3 py-1.5 rounded-full font-medium transition text-center ${
+              className={`px-3 py-1.5 rounded-xl font-bold transition text-center ${
                 activeChart === 'posts'
-                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-slate-950 text-amber-300 font-black shadow-xs'
+                  : 'text-slate-700 hover:text-slate-950'
               }`}
             >
               Views 10 Video
             </button>
             <button
               onClick={() => setActiveChart('followers')}
-              className={`px-3 py-1.5 rounded-full font-medium transition text-center ${
+              className={`px-3 py-1.5 rounded-xl font-bold transition text-center ${
                 activeChart === 'followers'
-                  ? 'bg-white text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-slate-950 text-amber-300 font-black shadow-xs'
+                  : 'text-slate-700 hover:text-slate-950'
               }`}
             >
               Kurva Followers
@@ -209,54 +209,54 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
 
           {/* Sub-Filters */}
           {activeChart === 'followers' ? (
-            <div className="grid grid-cols-3 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+            <div className="grid grid-cols-3 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-amber-50/80 border-2 border-slate-900 p-1 rounded-2xl shadow-[2px_2px_0px_#0f172a] text-xs">
               <button
                 onClick={() => setPeriod('7d')}
-                className={`px-2.5 py-1 rounded-full transition text-center ${
-                  period === '7d' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-xl transition text-center ${
+                  period === '7d' ? 'bg-[#FFC72C] text-slate-950 font-black border border-slate-900 shadow-2xs' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 7H
               </button>
               <button
                 onClick={() => setPeriod('30d')}
-                className={`px-2.5 py-1 rounded-full transition text-center ${
-                  period === '30d' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-xl transition text-center ${
+                  period === '30d' ? 'bg-[#FFC72C] text-slate-950 font-black border border-slate-900 shadow-2xs' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 30H
               </button>
               <button
                 onClick={() => setPeriod('all')}
-                className={`px-2.5 py-1 rounded-full transition text-center ${
-                  period === 'all' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-xl transition text-center ${
+                  period === 'all' ? 'bg-[#FFC72C] text-slate-950 font-black border border-slate-900 shadow-2xs' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 Semua
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-slate-100 p-1 rounded-full text-xs">
+            <div className="grid grid-cols-3 sm:flex sm:items-center space-x-0 sm:space-x-1 bg-amber-50/80 border-2 border-slate-900 p-1 rounded-2xl shadow-[2px_2px_0px_#0f172a] text-xs">
               <button
                 onClick={() => setPostMetric('views')}
-                className={`px-2.5 py-1 rounded-full transition text-center ${
-                  postMetric === 'views' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-xl transition text-center ${
+                  postMetric === 'views' ? 'bg-[#FFC72C] text-slate-950 font-black border border-slate-900 shadow-2xs' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 Views
               </button>
               <button
                 onClick={() => setPostMetric('likes')}
-                className={`px-2.5 py-1 rounded-full transition text-center ${
-                  postMetric === 'likes' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-xl transition text-center ${
+                  postMetric === 'likes' ? 'bg-[#FFC72C] text-slate-950 font-black border border-slate-900 shadow-2xs' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 Likes
               </button>
               <button
                 onClick={() => setPostMetric('engagement')}
-                className={`px-2.5 py-1 rounded-full transition text-center ${
-                  postMetric === 'engagement' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-xl transition text-center ${
+                  postMetric === 'engagement' ? 'bg-[#FFC72C] text-slate-950 font-black border border-slate-900 shadow-2xs' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 ER%
@@ -283,8 +283,8 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                 <AreaChart data={followersData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="followerAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -309,11 +309,11 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                       if (active && payload && payload.length) {
                         const data = payload[0].payload;
                         return (
-                          <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-lg text-xs space-y-1">
-                            <p className="text-slate-500 font-medium">
+                          <div className="bg-white border-2 border-slate-900 p-3 rounded-xl shadow-[3px_3px_0px_#0f172a] text-xs space-y-1">
+                            <p className="text-slate-500 font-bold">
                               {formatDateWIB(data.rawDate)}
                             </p>
-                            <p className="text-base font-bold text-blue-600 font-mono">
+                            <p className="text-base font-black text-amber-600 font-mono">
                               {formatExactNumber(data.followers)} followers
                             </p>
                           </div>
@@ -325,10 +325,10 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                   <Area
                     type="monotone"
                     dataKey="followers"
-                    stroke="#2563eb"
-                    strokeWidth={2.5}
-                    dot={{ r: 3.5, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }}
-                    activeDot={{ r: 6, fill: '#1d4ed8', stroke: '#fff', strokeWidth: 2 }}
+                    stroke="#f59e0b"
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: '#f59e0b', stroke: '#0f172a', strokeWidth: 2 }}
+                    activeDot={{ r: 6.5, fill: '#ea580c', stroke: '#0f172a', strokeWidth: 2 }}
                     fillOpacity={1}
                     fill="url(#followerAreaGrad)"
                     isAnimationActive={true}
@@ -363,22 +363,22 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
-                        <div className="bg-white border border-slate-200 p-3.5 rounded-xl shadow-lg text-xs space-y-2 max-w-xs">
-                          <p className="font-semibold text-slate-900 line-clamp-2">
+                        <div className="bg-white border-2 border-slate-900 p-3.5 rounded-xl shadow-[3px_3px_0px_#0f172a] text-xs space-y-2 max-w-xs">
+                          <p className="font-black text-slate-900 line-clamp-2">
                             {data.fullCaption || 'Tanpa caption'}
                           </p>
-                          <div className="pt-2 border-t border-slate-100 space-y-1 font-mono">
-                            <div className="flex justify-between text-slate-600">
-                              <span>Views:</span>
-                              <span className="font-bold text-slate-900">{formatExactNumber(data.views)}</span>
+                          <div className="pt-2 border-t-2 border-slate-100 space-y-1 font-mono">
+                            <div className="flex justify-between text-slate-700">
+                              <span className="font-bold">Views:</span>
+                              <span className="font-black text-amber-600">{formatExactNumber(data.views)}</span>
                             </div>
-                            <div className="flex justify-between text-slate-600">
-                              <span>Likes:</span>
-                              <span className="font-bold text-rose-600">{formatExactNumber(data.likes)}</span>
+                            <div className="flex justify-between text-slate-700">
+                              <span className="font-bold">Likes:</span>
+                              <span className="font-black text-rose-600">{formatExactNumber(data.likes)}</span>
                             </div>
-                            <div className="flex justify-between text-slate-600">
-                              <span>Engagement Rate:</span>
-                              <span className="font-bold text-blue-600">{formatEngagementRate(data.engagement)}</span>
+                            <div className="flex justify-between text-slate-700">
+                              <span className="font-bold">Engagement Rate:</span>
+                              <span className="font-black text-sky-600">{formatEngagementRate(data.engagement)}</span>
                             </div>
                           </div>
                         </div>
@@ -395,9 +395,11 @@ export const PerformanceChartCard: React.FC<PerformanceChartCardProps> = ({
                         postMetric === 'likes'
                           ? '#f43f5e'
                           : postMetric === 'engagement'
-                          ? '#3b82f6'
-                          : '#2563eb'
+                          ? '#0ea5e9'
+                          : '#f59e0b'
                       }
+                      stroke="#0f172a"
+                      strokeWidth={1.5}
                     />
                   ))}
                 </Bar>

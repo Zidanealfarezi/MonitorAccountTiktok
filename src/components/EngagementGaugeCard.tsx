@@ -1,5 +1,5 @@
 import React from 'react';
-import { MoreHorizontal, Flame, Eye, HeartHandshake } from 'lucide-react';
+import { MoreHorizontal, Flame, Sparkles } from 'lucide-react';
 import { PostWithSnapshot } from '../types';
 import {
   calculateEngagementRate,
@@ -60,6 +60,14 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
 
     const isActive = i < activeTicksCount;
 
+    // Saweria warm fiery gradient: Gold/Amber -> Orange -> Coral Red
+    let activeColor = '#f59e0b';
+    if (i >= 6 && i < 13) {
+      activeColor = '#f97316';
+    } else if (i >= 13) {
+      activeColor = '#ef4444';
+    }
+
     return {
       id: i,
       x1,
@@ -67,24 +75,28 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
       x2,
       y2,
       isActive,
-      // Color gradient from bright blue to royal indigo
-      activeColor: i > TOTAL_TICKS * 0.7 ? '#1d4ed8' : '#2563eb',
+      activeColor,
     };
   });
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col justify-between card-lift animate-fade-in-up [animation-delay:240ms]">
+    <div className="rounded-2xl bg-white border-2 border-slate-900 p-4 sm:p-6 shadow-[4px_4px_0px_#0f172a] hover:shadow-[5px_5px_0px_#0f172a] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex flex-col justify-between transition-all duration-200 animate-fade-in-up [animation-delay:240ms]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-bold text-slate-900 tracking-tight">
-            Engagement Rate
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <div className="flex items-center space-x-2">
+            <h3 className="text-base font-black text-slate-900 tracking-tight">
+              Engagement Rate
+            </h3>
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-300 text-slate-900 border border-slate-900 rotate-[-1.5deg] shadow-2xs">
+              ⚡ LIVE METRIC
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5 font-medium">
             Interaksi per views sampel
           </p>
         </div>
-        <div className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition cursor-pointer">
+        <div className="w-8 h-8 rounded-xl bg-amber-50 border border-slate-900 hover:bg-amber-100 flex items-center justify-center text-slate-800 transition cursor-pointer shadow-2xs">
           <MoreHorizontal className="w-4 h-4" />
         </div>
       </div>
@@ -92,12 +104,6 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
       {/* Radial Semi-Circle Gauge */}
       <div className="relative flex flex-col items-center justify-center my-2">
         <svg viewBox="0 0 260 145" className="w-64 h-36">
-          <defs>
-            <linearGradient id="activeTickGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#1d4ed8" />
-            </linearGradient>
-          </defs>
           {ticks.map((t) => (
             <line
               key={t.id}
@@ -105,7 +111,7 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
               y1={t.y1}
               x2={t.x2}
               y2={t.y2}
-              stroke={t.isActive ? t.activeColor : '#e2e8f0'}
+              stroke={t.isActive ? t.activeColor : '#f1f5f9'}
               strokeWidth="7"
               strokeLinecap="round"
               className="transition-all duration-700 ease-out"
@@ -115,38 +121,38 @@ export const EngagementGaugeCard: React.FC<EngagementGaugeCardProps> = ({ posts 
 
         {/* Center ER Text inside the Arc */}
         <div className="absolute bottom-2 text-center animate-scale-in">
-          <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono tracking-tight">
             {formatEngagementRate(batchER)}
           </div>
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-0.5 flex items-center justify-center space-x-1">
-            <Flame className="w-3.5 h-3.5 text-blue-600 animate-float" />
+          <div className="text-xs font-black text-amber-700 uppercase tracking-wider mt-0.5 flex items-center justify-center space-x-1">
+            <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-bounce" />
             <span>Kualitas Interaksi</span>
           </div>
         </div>
       </div>
 
-      {/* Bottom 2 Stat Boxes (Matching Boltshift Number of Sales & Total Revenue) */}
-      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 mt-1">
-        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3 hover:bg-slate-100/70 transition-colors">
-          <div className="text-[11px] font-medium text-slate-500">
+      {/* Bottom 2 Stat Boxes (Saweria Creator Tip Counter Style) */}
+      <div className="grid grid-cols-2 gap-3 pt-3 border-t-2 border-slate-100 mt-1">
+        <div className="bg-amber-50/70 border-2 border-slate-900 rounded-xl p-3 shadow-[2px_2px_0px_#0f172a] hover:bg-amber-100/70 transition-all">
+          <div className="text-[11px] font-bold text-slate-700">
             Rata-rata Views
           </div>
-          <div className="text-lg font-bold text-slate-900 font-mono mt-0.5 transition-all">
+          <div className="text-lg font-black text-slate-900 font-mono mt-0.5 transition-all">
             {formatCompactNumber(animatedAvgViews)}
           </div>
-          <div className="text-[10px] text-blue-600 font-medium mt-0.5">
+          <div className="text-[10px] text-amber-800 font-bold mt-0.5">
             Per video terpantau
           </div>
         </div>
 
-        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3 hover:bg-slate-100/70 transition-colors">
-          <div className="text-[11px] font-medium text-slate-500">
+        <div className="bg-orange-50/70 border-2 border-slate-900 rounded-xl p-3 shadow-[2px_2px_0px_#0f172a] hover:bg-orange-100/70 transition-all">
+          <div className="text-[11px] font-bold text-slate-700">
             Total Interaksi
           </div>
-          <div className="text-lg font-bold text-slate-900 font-mono mt-0.5 transition-all">
+          <div className="text-lg font-black text-slate-900 font-mono mt-0.5 transition-all">
             {formatCompactNumber(animatedInteractions)}
           </div>
-          <div className="text-[10px] text-slate-400 mt-0.5">
+          <div className="text-[10px] text-orange-800 font-bold mt-0.5">
             Likes + Komentar + Share
           </div>
         </div>
