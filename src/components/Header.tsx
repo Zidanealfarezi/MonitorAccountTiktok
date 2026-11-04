@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, ShieldCheck, Database, Bell, Sparkles } from 'lucide-react';
+import { Settings, ShieldCheck, Database, Sparkles, Smartphone, Laptop } from 'lucide-react';
 import { formatCurrencyUsd } from '../lib/formatters';
 import { StorageService } from '../lib/storage';
+import { DeviceAuthService } from '../lib/deviceAuth';
 
 interface HeaderProps {
-  onOpenSettings: () => void;
+  onOpenSettings: (tab?: 'accounts' | 'usage' | 'api' | 'security') => void;
   currentTab?: 'dashboard' | 'accounts' | 'usage';
   onTabChange?: (tab: 'dashboard' | 'accounts' | 'usage') => void;
 }
@@ -31,6 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings, currentTab = 'da
   const usage = StorageService.getMonthlyUsage();
   const config = StorageService.getConfig();
   const budgetPercent = Math.min(100, Math.round((usage.totalChargedUsd / config.monthlyBudgetCapUsd) * 100));
+  const currentDevice = DeviceAuthService.getOrInitCurrentDeviceInfo();
 
   return (
     <header className={`bg-white/85 backdrop-blur-md sticky top-0 z-40 transition-all duration-300 ${
@@ -66,22 +68,38 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings, currentTab = 'da
               Dashboard
             </button>
             <button
-              onClick={() => onOpenSettings()}
+              onClick={() => onOpenSettings('accounts')}
               className="px-4 py-1.5 rounded-full text-slate-600 hover:text-slate-900 transition"
             >
               Kelola Akun
             </button>
             <button
-              onClick={() => onOpenSettings()}
+              onClick={() => onOpenSettings('usage')}
               className="px-4 py-1.5 rounded-full text-slate-600 hover:text-slate-900 transition"
             >
               Biaya & Kuota
+            </button>
+            <button
+              onClick={() => onOpenSettings('security')}
+              className="px-4 py-1.5 rounded-full text-slate-600 hover:text-slate-900 transition"
+            >
+              Perangkat
             </button>
           </nav>
         </div>
 
         {/* Right Info & Actions */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Device Whitelisted Pill */}
+          <button
+            onClick={() => onOpenSettings('security')}
+            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 transition cursor-pointer"
+            title="Perangkat ini resmi terdaftar & terlindungi (Klik untuk kelola)"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="text-[11px] font-mono font-bold">{currentDevice.deviceId}</span>
+          </button>
+
           {/* Apify Budget Pill */}
           <div
             className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs"
@@ -117,14 +135,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings, currentTab = 'da
 
           {/* Settings Button */}
           <button
-            onClick={onOpenSettings}
-            className="w-9 h-9 rounded-full bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 flex items-center justify-center transition shadow-2xs"
+            onClick={() => onOpenSettings()}
+            className="w-9 h-9 rounded-full bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 flex items-center justify-center transition shadow-2xs cursor-pointer"
             title="Pengaturan"
           >
             <Settings className="w-4 h-4" />
           </button>
 
-          {/* User Profile Pill (Like reference image) */}
+          {/* User Profile Pill */}
           <div className="hidden lg:flex items-center space-x-2 pl-1">
             <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold ring-2 ring-slate-100">
               Z

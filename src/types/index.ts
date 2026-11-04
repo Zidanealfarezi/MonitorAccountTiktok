@@ -123,3 +123,23 @@ export interface AppConfig {
   warningThresholdUsd: number;
   isMockMode: boolean;
 }
+
+export type DeviceType = 'mac' | 'iphone' | 'windows' | 'android' | 'linux' | 'other';
+
+export interface DeviceAuthRecord {
+  deviceId: string;
+  deviceName: string;
+  deviceType: DeviceType;
+  registeredAt: string;
+  lastActiveAt: string;
+  token: string;
+  status: 'authorized' | 'revoked';
+  userAgent?: string;
+}
+
+export interface SecurityConfig {
+  masterPinHash: string;
+  isLockEnabled: boolean;
+  registeredDevices: DeviceAuthRecord[];
+  revokedDeviceIds: string[];
+}

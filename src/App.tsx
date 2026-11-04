@@ -12,11 +12,15 @@ import { Account, AccountDashboardData } from './types';
 import { AlertCircle, CheckCircle2, ChevronUp } from 'lucide-react';
 import { ScrollReveal } from './components/ScrollReveal';
 import { CuteSyncAlert } from './components/CuteSyncAlert';
+import { DeviceAuthService } from './lib/deviceAuth';
+import { DeviceLockScreen } from './components/DeviceLockScreen';
 
 const AUTO_SYNC_MIN_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes safety guard against rapid F5 spam
 const LAST_AUTO_SYNC_KEY = 'tiktok_monitor_last_auto_sync';
 
 export const App: React.FC = () => {
+  const [isDeviceAuthorized, setIsDeviceAuthorized] = useState<boolean | null>(null);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'accounts' | 'usage' | 'api' | 'security'>('accounts');
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<string>('');
   const [dashboardData, setDashboardData] = useState<AccountDashboardData | null>(null);
@@ -133,9 +137,33 @@ export const App: React.FC = () => {
     }
   };
 
+  // Check device authorization on initial mount
   useEffect(() => {
-    loadAccountsData();
+    const checkAuth = async () => {
+      const authorized = await DeviceAuthService.isCurrentDeviceAuthorized();
+      setIsDeviceAuthorized(authorized);
+      if (authorized) {
+        loadAccountsData();
+      }
+    };
+    checkAuth();
   }, []);
+
+  const handleDeviceAuthorized = () => {
+    setIsDeviceAuthorized(true);
+    loadAccountsData();
+    showToast('success', 'Perangkat berhasil diverifikasi. Selamat datang!');
+  };
+
+  const handleLockDevice = () => {
+    DeviceAuthService.lockCurrentDevice();
+    setIsDeviceAuthorized(false);
+  };
+
+  const handleOpenSettings = (tab: 'accounts' | 'usage' | 'api' | 'security' = 'accounts') => {
+    setSettingsInitialTab(tab);
+    setIsSettingsOpen(true);
+  };
 
   const handleSelectAccount = (id: string) => {
     setSelectedAccountId(id);
@@ -233,6 +261,25 @@ export const App: React.FC = () => {
 
   const usage = StorageService.getMonthlyUsage();
 
+  // If device is not authorized, render DeviceLockScreen
+  if (isDeviceAuthorized === false) {
+    return <DeviceLockScreen onAuthorized={handleDeviceAuthorized} />;
+  }
+
+  // Loading state while checking device auth
+  if (isDeviceAuthorized === null) {
+    return (
+      <div className="min-h-screen bg-[#f4f6fb] flex items-center justify-center p-4">
+        <div className="flex flex-col items-center space-y-3">
+          <div className="w-10 h-10 border-3 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
+          <span className="text-xs font-bold text-slate-500 font-mono tracking-wider">
+            Memverifikasi Perangkat...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f4f6fb] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
       {/* Dynamic Background Parallax Lighting (Reacts to PC & Mobile Scroll) */}
@@ -246,7 +293,7 @@ export const App: React.FC = () => {
       />
 
       {/* Top Navbar */}
-      <Header onOpenSettings={() => setIsSettingsOpen(true)} />
+      <Header onOpenSettings={handleOpenSettings} />
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-1 w-full">
@@ -359,6 +406,8 @@ export const App: React.FC = () => {
         onClose={() => setIsSettingsOpen(false)}
         accounts={accounts}
         onAccountsUpdated={loadAccountsData}
+        onLockDevice={handleLockDevice}
+        initialTab={settingsInitialTab}
       />
     </div>
   );
