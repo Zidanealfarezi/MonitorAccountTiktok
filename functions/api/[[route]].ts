@@ -79,6 +79,20 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       }, corsHeaders);
     }
 
+    // 4. POST /api/devices/log - Record audit trail with IP & Country
+    if (path === '/api/devices/log' && method === 'POST') {
+      const clientIp = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'Local';
+      const clientCountry = request.headers.get('CF-IPCountry') || 'ID';
+      const body = await request.json().catch(() => ({}));
+      
+      return jsonResponse({
+        success: true,
+        clientIp,
+        clientCountry,
+        receivedAt: new Date().toISOString(),
+      }, corsHeaders);
+    }
+
     // Fallback for API routes
     return jsonResponse({
       message: 'TikTok Monitor Cloudflare Backend API is active',

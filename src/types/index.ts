@@ -135,6 +135,18 @@ export interface DeviceAuthRecord {
   token: string;
   status: 'authorized' | 'revoked';
   userAgent?: string;
+  ipHint?: string;
+}
+
+export interface DeviceAccessLog {
+  id: string;
+  deviceId: string;
+  deviceName: string;
+  deviceType: DeviceType;
+  timestamp: string;
+  status: 'authorized' | 'failed' | 'revoked' | 'locked';
+  details: string;
+  ipHint?: string;
 }
 
 export interface SecurityConfig {
@@ -142,4 +154,5 @@ export interface SecurityConfig {
   isLockEnabled: boolean;
   registeredDevices: DeviceAuthRecord[];
   revokedDeviceIds: string[];
+  accessLogs: DeviceAccessLog[];
 }

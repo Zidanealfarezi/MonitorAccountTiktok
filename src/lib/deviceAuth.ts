@@ -1,4 +1,4 @@
-import { DeviceAuthRecord, DeviceType, SecurityConfig } from '../types';
+import { DeviceAuthRecord, DeviceType, SecurityConfig, DeviceAccessLog } from '../types';
 
 const STORAGE_KEYS = {
   CURRENT_AUTH: 'tiktok_monitor_device_auth',
@@ -115,19 +115,23 @@ export class DeviceAuthService {
         isLockEnabled: true,
         registeredDevices: [],
         revokedDeviceIds: [],
+        accessLogs: [],
       };
       localStorage.setItem(STORAGE_KEYS.SECURITY_CONFIG, JSON.stringify(initial));
       return initial;
     }
 
     try {
-      return JSON.parse(raw) as SecurityConfig;
+      const parsed = JSON.parse(raw) as SecurityConfig;
+      if (!parsed.accessLogs) parsed.accessLogs = [];
+      return parsed;
     } catch {
       return {
         masterPinHash: DEFAULT_MASTER_PIN_HASH,
         isLockEnabled: true,
         registeredDevices: [],
         revokedDeviceIds: [],
+        accessLogs: [],
       };
     }
   }
@@ -137,6 +141,65 @@ export class DeviceAuthService {
    */
   public static saveSecurityConfig(config: SecurityConfig): void {
     localStorage.setItem(STORAGE_KEYS.SECURITY_CONFIG, JSON.stringify(config));
+  }
+
+  /**
+   * Record access event in the security audit log
+   */
+  public static logAccessEvent(
+    status: 'authorized' | 'failed' | 'revoked' | 'locked',
+    details: string,
+    customDeviceId?: string,
+    customDeviceName?: string
+  ): void {
+    try {
+      const info = this.getOrInitCurrentDeviceInfo();
+      const deviceId = customDeviceId || info.deviceId;
+      const deviceName = customDeviceName || info.deviceName;
+      const deviceType = info.deviceType;
+
+      const logEntry: DeviceAccessLog = {
+        id: 'log-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6),
+        deviceId,
+        deviceName,
+        deviceType,
+        timestamp: new Date().toISOString(),
+        status,
+        details,
+      };
+
+      const config = this.getSecurityConfig();
+      config.accessLogs = [logEntry, ...(config.accessLogs || [])].slice(0, 50); // Keep last 50 events
+      this.saveSecurityConfig(config);
+
+      // Async report to Cloudflare API (Fire and forget)
+      if (typeof fetch !== 'undefined') {
+        fetch('/api/devices/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(logEntry),
+        }).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('Gagal mencatat log perangkat:', e);
+    }
+  }
+
+  /**
+   * Get all access audit logs
+   */
+  public static getAccessLogs(): DeviceAccessLog[] {
+    const config = this.getSecurityConfig();
+    return config.accessLogs || [];
+  }
+
+  /**
+   * Clear all access audit logs
+   */
+  public static clearAccessLogs(): void {
+    const config = this.getSecurityConfig();
+    config.accessLogs = [];
+    this.saveSecurityConfig(config);
   }
 
   /**
@@ -203,17 +266,18 @@ export class DeviceAuthService {
   ): Promise<{ success: boolean; error?: string }> {
     const config = this.getSecurityConfig();
     const inputHash = await sha256(inputPin.trim());
+    const { deviceId, deviceName, deviceType } = this.getOrInitCurrentDeviceInfo();
+    const finalDeviceName = (customDeviceName && customDeviceName.trim()) || deviceName;
 
     // Validate Master PIN
     if (inputHash !== config.masterPinHash && inputPin.trim() !== '889922') {
+      this.logAccessEvent('failed', 'Percobaan pendaftaran gagal (Master PIN salah)', deviceId, finalDeviceName);
       return {
         success: false,
         error: 'Master PIN tidak sesuai. Periksa kembali PIN pemilik Anda.',
       };
     }
 
-    const { deviceId, deviceName, deviceType } = this.getOrInitCurrentDeviceInfo();
-    const finalDeviceName = (customDeviceName && customDeviceName.trim()) || deviceName;
     const now = new Date().toISOString();
 
     // Generate cryptographic hardware authorization token
@@ -244,6 +308,9 @@ export class DeviceAuthService {
     }
 
     this.saveSecurityConfig(config);
+
+    // Record success in access logs
+    this.logAccessEvent('authorized', 'Pendaftaran perangkat resmi berhasil', deviceId, finalDeviceName);
 
     return { success: true };
   }
@@ -286,6 +353,7 @@ export class DeviceAuthService {
     }
 
     this.saveSecurityConfig(config);
+    this.logAccessEvent('authorized', 'Master PIN pemilik berhasil diubah');
     return { success: true };
   }
 
@@ -304,6 +372,7 @@ export class DeviceAuthService {
     );
 
     this.saveSecurityConfig(config);
+    this.logAccessEvent('revoked', `Izin perangkat ${deviceId} dicabut oleh pemilik`, deviceId);
 
     // If revoking current device, log out immediately
     const currentInfo = this.getOrInitCurrentDeviceInfo();
@@ -316,6 +385,8 @@ export class DeviceAuthService {
    * Lock / Logout current device without deleting from global whitelist
    */
   public static lockCurrentDevice(): void {
+    const info = this.getOrInitCurrentDeviceInfo();
+    this.logAccessEvent('locked', 'Perangkat dikunci manual oleh pemilik', info.deviceId, info.deviceName);
     localStorage.removeItem(STORAGE_KEYS.CURRENT_AUTH);
   }
 

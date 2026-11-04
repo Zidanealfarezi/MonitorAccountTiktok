@@ -15,8 +15,11 @@ import {
   AlertTriangle,
   LogOut,
   Sparkles,
+  Activity,
+  AlertOctagon,
+  History,
 } from 'lucide-react';
-import { Account, AppConfig, DeviceAuthRecord, DeviceType } from '../types';
+import { Account, AppConfig, DeviceAuthRecord, DeviceType, DeviceAccessLog } from '../types';
 import { StorageService } from '../lib/storage';
 import { formatCurrencyUsd, formatDateWIB } from '../lib/formatters';
 import { getSupabaseClient } from '../lib/supabase';
@@ -41,12 +44,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'accounts' | 'usage' | 'api' | 'security'>(initialTab);
 
+  React.useEffect(() => {
+    if (isOpen && initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
+
   // Security Tab State
   const [registeredDevices, setRegisteredDevices] = useState<DeviceAuthRecord[]>(
     DeviceAuthService.getAllRegisteredDevices()
   );
   const currentDeviceInfo = DeviceAuthService.getOrInitCurrentDeviceInfo();
   const currentAuth = DeviceAuthService.getCurrentDeviceRecord();
+  const [accessLogs, setAccessLogs] = useState<DeviceAccessLog[]>(
+    DeviceAuthService.getAccessLogs()
+  );
 
   const [oldPin, setOldPin] = useState('');
   const [newPin, setNewPin] = useState('');
@@ -635,6 +647,66 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* TAB 4: SECURITY & DEVICE WHITELIST */}
           {activeTab === 'security' && (
             <div className="space-y-6">
+              {/* Quick Security KPIs */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center space-x-3">
+                  <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Perangkat Resmi</div>
+                    <div className="text-base font-extrabold text-slate-900">
+                      {registeredDevices.filter(d => d.status === 'authorized').length} Perangkat
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center space-x-3">
+                  <div className={`p-2.5 rounded-xl shrink-0 ${
+                    accessLogs.filter(l => l.status === 'failed').length > 0
+                      ? 'bg-rose-50 text-rose-600'
+                      : 'bg-emerald-50 text-emerald-600'
+                  }`}>
+                    {accessLogs.filter(l => l.status === 'failed').length > 0 ? (
+                      <AlertOctagon className="w-5 h-5 animate-pulse" />
+                    ) : (
+                      <CheckCircle className="w-5 h-5" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Percobaan Ditolak</div>
+                    <div className={`text-base font-extrabold ${
+                      accessLogs.filter(l => l.status === 'failed').length > 0 ? 'text-rose-600' : 'text-slate-900'
+                    }`}>
+                      {accessLogs.filter(l => l.status === 'failed').length} Kali
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center space-x-3">
+                  <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 shrink-0">
+                    <Activity className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status Proteksi</div>
+                    <div className="text-base font-extrabold text-emerald-600 flex items-center space-x-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>Aktif & Terkunci</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Intruder Warning Banner if any failed attempts */}
+              {accessLogs.filter(l => l.status === 'failed').length > 0 && (
+                <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start space-x-2.5 text-xs">
+                  <AlertOctagon className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong>Peringatan Keamanan:</strong> Terdeteksi {accessLogs.filter(l => l.status === 'failed').length} kali percobaan akses dengan PIN salah dari perangkat tidak dikenal. Akses mereka telah diblokir secara otomatis.
+                  </div>
+                </div>
+              )}
+
               {/* Current Device Status Card */}
               <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50/90 via-indigo-50/80 to-purple-50/90 border border-indigo-100 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -736,6 +808,78 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                           </div>
                         );
                       })
+                  )}
+                </div>
+              </div>
+
+              {/* Real-time Access Audit Log Trail */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs flex items-center space-x-2">
+                    <History className="w-4 h-4 text-indigo-600" />
+                    <span>Riwayat Log Aktivitas & Percobaan Akses ({accessLogs.length})</span>
+                  </h4>
+                  {accessLogs.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        DeviceAuthService.clearAccessLogs();
+                        setAccessLogs([]);
+                      }}
+                      className="text-[11px] font-semibold text-slate-400 hover:text-slate-600 transition"
+                    >
+                      Bersihkan Log
+                    </button>
+                  )}
+                </div>
+
+                <div className="border border-slate-200/80 rounded-2xl overflow-hidden bg-white max-h-56 overflow-y-auto divide-y divide-slate-100">
+                  {accessLogs.length === 0 ? (
+                    <div className="p-4 text-center text-slate-400 text-xs">
+                      Belum ada riwayat aktivitas akses tercatat.
+                    </div>
+                  ) : (
+                    accessLogs.map((log) => {
+                      const isFailed = log.status === 'failed';
+                      const isRevoked = log.status === 'revoked';
+                      return (
+                        <div
+                          key={log.id}
+                          className={`p-3 flex items-center justify-between transition text-xs ${
+                            isFailed ? 'bg-rose-50/50' : 'hover:bg-slate-50/70'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-2.5">
+                            <span className="flex-shrink-0">
+                              {isFailed ? (
+                                <AlertOctagon className="w-4 h-4 text-rose-600" />
+                              ) : isRevoked ? (
+                                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                              ) : (
+                                <CheckCircle className="w-4 h-4 text-emerald-600" />
+                              )}
+                            </span>
+                            <div>
+                              <div className="flex items-center space-x-2">
+                                <span className={`font-bold ${isFailed ? 'text-rose-900' : 'text-slate-800'}`}>
+                                  {log.deviceName}
+                                </span>
+                                <span className="text-[10px] font-mono text-slate-400">
+                                  ({log.deviceId})
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-slate-500 mt-0.5">
+                                {log.details}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="text-right text-[10px] font-mono text-slate-400 shrink-0">
+                            {formatDateWIB(log.timestamp)}
+                          </div>
+                        </div>
+                      );
+                    })
                   )}
                 </div>
               </div>
