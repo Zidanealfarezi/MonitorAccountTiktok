@@ -182,12 +182,12 @@ export const DeviceLockScreen: React.FC<DeviceLockScreenProps> = ({ onAuthorized
           </div>
         </div>
 
-        {/* Master PIN Form */}
+        {/* Master Password Form */}
         {!isSuccess && (
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-700">
-                Master PIN Rahasia Pemilik
+                Password Rahasia Pemilik
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -197,7 +197,7 @@ export const DeviceLockScreen: React.FC<DeviceLockScreenProps> = ({ onAuthorized
                   type={showPin ? 'text' : 'password'}
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
-                  placeholder="Masukkan Master PIN (Default: 889922)"
+                  placeholder="Masukkan Password Pemilik"
                   className="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs sm:text-sm font-mono tracking-wider focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900"
                   autoComplete="off"
                 />
@@ -221,7 +221,7 @@ export const DeviceLockScreen: React.FC<DeviceLockScreenProps> = ({ onAuthorized
             <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-100 text-[11px] text-blue-900 leading-relaxed flex items-start space-x-2">
               <Sparkles className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
               <span>
-                <strong>Cukup 1x daftar per perangkat.</strong> Setelah didaftarkan, HP atau Laptop ini akan langsung diizinkan membuka dashboard tanpa harus mengetik PIN lagi.
+                <strong>Cukup 1x daftar per perangkat.</strong> Setelah didaftarkan, HP atau Laptop ini akan langsung diizinkan membuka dashboard tanpa harus mengetik password lagi.
               </span>
             </div>
 

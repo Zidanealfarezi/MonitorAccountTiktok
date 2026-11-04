@@ -180,12 +180,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setPinMessage(null);
 
     if (newPin !== confirmPin) {
-      setPinMessage({ type: 'error', text: 'Konfirmasi PIN baru tidak cocok.' });
+      setPinMessage({ type: 'error', text: 'Konfirmasi password baru tidak cocok.' });
       return;
     }
 
     if (newPin.trim().length < 6) {
-      setPinMessage({ type: 'error', text: 'PIN baru minimal harus 6 karakter / angka.' });
+      setPinMessage({ type: 'error', text: 'Password baru minimal harus 6 karakter.' });
       return;
     }
 
@@ -193,12 +193,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     try {
       const res = await DeviceAuthService.updateMasterPin(oldPin, newPin);
       if (res.success) {
-        setPinMessage({ type: 'success', text: 'Master PIN berhasil diperbarui!' });
+        setPinMessage({ type: 'success', text: 'Password pemilik berhasil diperbarui!' });
         setOldPin('');
         setNewPin('');
         setConfirmPin('');
       } else {
-        setPinMessage({ type: 'error', text: res.error || 'Gagal mengubah PIN' });
+        setPinMessage({ type: 'error', text: res.error || 'Gagal mengubah password' });
       }
     } finally {
       setIsUpdatingPin(false);
@@ -884,51 +884,51 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               </div>
 
-              {/* Change Master PIN Form */}
+              {/* Change Master Password Form */}
               <div className="bg-slate-50/80 border border-slate-200/80 p-4 rounded-2xl space-y-3">
                 <h4 className="font-bold text-slate-800 text-xs flex items-center space-x-2">
                   <KeyRound className="w-4 h-4 text-blue-600" />
-                  <span>Ubah Master PIN Pemilik</span>
+                  <span>Ubah Password Pemilik</span>
                 </h4>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Master PIN digunakan saat mendaftarkan HP atau Laptop baru. Simpan PIN ini baik-baik.
+                  Password pemilik digunakan saat mendaftarkan HP atau Laptop baru ke sistem ini. Simpan password ini baik-baik.
                 </p>
 
                 <form onSubmit={handleUpdatePin} className="space-y-3 pt-1">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                        PIN Lama (Default: 889922)
+                        Password Lama
                       </label>
                       <input
                         type="password"
                         value={oldPin}
                         onChange={(e) => setOldPin(e.target.value)}
-                        placeholder="••••••"
+                        placeholder="••••••••"
                         className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
                       />
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                        PIN Baru (min 6 digit)
+                        Password Baru (min 6 karakter)
                       </label>
                       <input
                         type="password"
                         value={newPin}
                         onChange={(e) => setNewPin(e.target.value)}
-                        placeholder="PIN Baru"
+                        placeholder="Password Baru"
                         className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
                       />
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                        Konfirmasi PIN Baru
+                        Konfirmasi Password Baru
                       </label>
                       <input
                         type="password"
                         value={confirmPin}
                         onChange={(e) => setConfirmPin(e.target.value)}
-                        placeholder="Ulangi PIN Baru"
+                        placeholder="Ulangi Password Baru"
                         className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
                       />
                     </div>
@@ -952,7 +952,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       disabled={isUpdatingPin || !oldPin || !newPin || !confirmPin}
                       className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition active:scale-95 disabled:opacity-50 cursor-pointer"
                     >
-                      {isUpdatingPin ? 'Memperbarui...' : 'Simpan Master PIN Baru'}
+                      {isUpdatingPin ? 'Memperbarui...' : 'Simpan Password Baru'}
                     </button>
                   </div>
                 </form>

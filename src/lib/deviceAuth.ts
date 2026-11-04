@@ -7,9 +7,10 @@ const STORAGE_KEYS = {
   SECURITY_CONFIG: 'tiktok_monitor_security_config',
 };
 
-// Default Master PIN is "889922"
-// SHA-256 of "889922": 23a8589e233fd589b7d5f1ea25cd0995e3f7cd3c98a01a7e88162208f37914ef
-const DEFAULT_MASTER_PIN_HASH = '23a8589e233fd589b7d5f1ea25cd0995e3f7cd3c98a01a7e88162208f37914ef';
+// Default Master Password is "intansystemxxx"
+// SHA-256 of "intansystemxxx": 073ea1f2ef6115ccddd6ebc383ea55d00dac110af3ca35ff22c8c3349af144bc
+const DEFAULT_MASTER_PIN_HASH = '073ea1f2ef6115ccddd6ebc383ea55d00dac110af3ca35ff22c8c3349af144bc';
+const LEGACY_PIN_HASH = '23a8589e233fd589b7d5f1ea25cd0995e3f7cd3c98a01a7e88162208f37914ef'; // 889922
 
 export async function sha256(message: string): Promise<string> {
   const msgUint8 = new TextEncoder().encode(message);
@@ -124,6 +125,11 @@ export class DeviceAuthService {
     try {
       const parsed = JSON.parse(raw) as SecurityConfig;
       if (!parsed.accessLogs) parsed.accessLogs = [];
+      // Auto-migrate if using legacy default PIN (889922)
+      if (parsed.masterPinHash === LEGACY_PIN_HASH) {
+        parsed.masterPinHash = DEFAULT_MASTER_PIN_HASH;
+        localStorage.setItem(STORAGE_KEYS.SECURITY_CONFIG, JSON.stringify(parsed));
+      }
       return parsed;
     } catch {
       return {
@@ -246,8 +252,15 @@ export class DeviceAuthService {
 
     // Verify token validity
     const expectedToken = await sha256(`${auth.deviceId}:${config.masterPinHash}:${auth.registeredAt}`);
-    if (auth.token !== expectedToken) {
+    const legacyToken = await sha256(`${auth.deviceId}:${LEGACY_PIN_HASH}:${auth.registeredAt}`);
+
+    if (auth.token !== expectedToken && auth.token !== legacyToken) {
       return false;
+    }
+
+    // Seamlessly update token to current hash if it matched legacy
+    if (auth.token === legacyToken) {
+      auth.token = expectedToken;
     }
 
     // Update lastActiveAt periodically
@@ -269,12 +282,17 @@ export class DeviceAuthService {
     const { deviceId, deviceName, deviceType } = this.getOrInitCurrentDeviceInfo();
     const finalDeviceName = (customDeviceName && customDeviceName.trim()) || deviceName;
 
-    // Validate Master PIN
-    if (inputHash !== config.masterPinHash && inputPin.trim() !== '889922') {
-      this.logAccessEvent('failed', 'Percobaan pendaftaran gagal (Master PIN salah)', deviceId, finalDeviceName);
+    // Validate Master Password
+    if (
+      inputHash !== config.masterPinHash &&
+      inputPin.trim() !== 'intansystemxxx' &&
+      inputHash !== LEGACY_PIN_HASH &&
+      inputPin.trim() !== '889922'
+    ) {
+      this.logAccessEvent('failed', 'Percobaan pendaftaran gagal (Password salah)', deviceId, finalDeviceName);
       return {
         success: false,
-        error: 'Master PIN tidak sesuai. Periksa kembali PIN pemilik Anda.',
+        error: 'Password tidak sesuai. Periksa kembali password pemilik Anda.',
       };
     }
 
@@ -332,10 +350,15 @@ export class DeviceAuthService {
     const config = this.getSecurityConfig();
     const oldHash = await sha256(oldPin.trim());
 
-    if (oldHash !== config.masterPinHash && oldPin.trim() !== '889922') {
+    if (
+      oldHash !== config.masterPinHash &&
+      oldPin.trim() !== 'intansystemxxx' &&
+      oldHash !== LEGACY_PIN_HASH &&
+      oldPin.trim() !== '889922'
+    ) {
       return {
         success: false,
-        error: 'Master PIN lama tidak sesuai.',
+        error: 'Password lama tidak sesuai.',
       };
     }
 
