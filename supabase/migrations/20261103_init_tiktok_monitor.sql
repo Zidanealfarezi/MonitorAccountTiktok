@@ -165,7 +165,7 @@ ON public.usage_ledger FOR ALL
 USING (auth.uid() = user_id OR user_id IS NULL)
 WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
--- 8. Seed Initial 6 Accounts (if not exists)
+-- 8. Seed Initial 7 Accounts (if not exists)
 INSERT INTO public.accounts (id, username, display_name, status)
 VALUES 
   ('a1111111-1111-1111-1111-111111111111', 'intansuarkartika', 'Intan Suar Kartika', 'active'),
@@ -173,5 +173,6 @@ VALUES
   ('a5555555-5555-5555-5555-555555555555', 'aqara.indonesia', 'Aqara Indonesia', 'active'),
   ('a4444444-4444-4444-4444-444444444444', 'dinda.kemala_', 'Dinda Kemala', 'active'),
   ('a2222222-2222-2222-2222-222222222222', 'rania.meutia', 'Rania Meutia', 'active'),
-  ('a3333333-3333-3333-3333-333333333333', 'nara.adelia_', 'Nara Adelia', 'active')
+  ('a3333333-3333-3333-3333-333333333333', 'nara.adelia_', 'Nara Adelia', 'active'),
+  ('a7777777-7777-7777-7777-777777777777', 'teuku.rayyan00', 'Bang Ray', 'active')
 ON CONFLICT DO NOTHING;

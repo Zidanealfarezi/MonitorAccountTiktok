@@ -66,6 +66,7 @@ const PREFERRED_ACCOUNT_ORDER: Record<string, number> = {
   'dinda.kemala_': 4,
   'rania.meutia': 5,
   'nara.adelia_': 6,
+  'teuku.rayyan00': 7,
 };
 
 export const sortAccounts = (accounts: Account[]): Account[] => {

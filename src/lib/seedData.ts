@@ -67,6 +67,17 @@ export const INITIAL_ACCOUNTS: Account[] = [
     created_at: '2026-10-20T00:00:00Z',
     updated_at: '2026-11-02T03:15:00Z',
   },
+  {
+    id: 'a7777777-7777-7777-7777-777777777777',
+    username: 'teuku.rayyan00',
+    display_name: 'Bang Ray',
+    tiktok_id: null,
+    avatar_url: '/avatars/bangray.jpg',
+    status: 'active',
+    last_sync_at: null,
+    created_at: '2026-11-10T00:00:00Z',
+    updated_at: '2026-11-10T00:00:00Z',
+  },
 ];
 
 // Helper to identify dummy seed snapshots vs live scraped snapshots

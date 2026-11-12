@@ -14,6 +14,7 @@ import { ScrollReveal } from './components/ScrollReveal';
 import { CuteSyncAlert } from './components/CuteSyncAlert';
 import { DeviceAuthService } from './lib/deviceAuth';
 import { DeviceLockScreen } from './components/DeviceLockScreen';
+import { formatCompactNumber } from './lib/formatters';
 
 const AUTO_SYNC_MIN_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes safety guard against rapid F5 spam
 const LAST_AUTO_SYNC_KEY = 'tiktok_monitor_last_auto_sync';
@@ -47,6 +48,19 @@ export const App: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
   const [scrollY, setScrollY] = useState<number>(0);
+  const [currentNavTab, setCurrentNavTab] = useState<'dashboard' | 'posts'>('dashboard');
+
+  const handleTabChange = (tab: 'dashboard' | 'posts') => {
+    setCurrentNavTab(tab);
+    if (tab === 'posts') {
+      setTimeout(() => {
+        const el = document.getElementById('postingan-terbaru');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -293,7 +307,11 @@ export const App: React.FC = () => {
       />
 
       {/* Top Navbar */}
-      <Header onOpenSettings={handleOpenSettings} />
+      <Header
+        currentTab={currentNavTab}
+        onTabChange={handleTabChange}
+        onOpenSettings={handleOpenSettings}
+      />
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-1 w-full">
@@ -314,6 +332,35 @@ export const App: React.FC = () => {
             <span>{toastMessage.text}</span>
           </div>
         )}
+
+        {/* Mobile View Switcher Pill */}
+        <div className="flex md:hidden items-center p-1 bg-amber-50/90 border-2 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] text-xs font-bold w-full">
+          <button
+            onClick={() => handleTabChange('dashboard')}
+            className={`flex-1 py-2 rounded-xl transition text-center cursor-pointer ${
+              currentNavTab === 'dashboard'
+                ? 'bg-slate-950 text-amber-300 font-black shadow-xs'
+                : 'text-slate-700 hover:text-slate-950'
+            }`}
+          >
+            📊 Dashboard
+          </button>
+          <button
+            onClick={() => handleTabChange('posts')}
+            className={`flex-1 py-2 rounded-xl transition flex items-center justify-center space-x-1.5 cursor-pointer ${
+              currentNavTab === 'posts'
+                ? 'bg-slate-950 text-amber-300 font-black shadow-xs'
+                : 'text-slate-700 hover:text-slate-950'
+            }`}
+          >
+            <span>🎬 Postingan Terbaru</span>
+            <span className={`px-1.5 py-0.2 rounded-md text-[10px] font-mono font-black ${
+              currentNavTab === 'posts' ? 'bg-[#FFC72C] text-slate-950' : 'bg-amber-200 text-slate-900 border border-slate-900/40'
+            }`}>
+              10
+            </span>
+          </button>
+        </div>
 
         {/* 1. Account Selector Header & Chips (Boltshift Title & Segment Controls) */}
         <ScrollReveal direction="down" duration={500} distance={16}>
@@ -338,33 +385,86 @@ export const App: React.FC = () => {
             isSyncing={isSyncing}
           />
         ) : dashboardData ? (
-          <div key={selectedAccountId} className="space-y-6">
-            {/* 4-KPI Boltshift Metrics Row */}
-            <ScrollReveal direction="up" duration={600} distance={20}>
-              <MetricsOverview
-                latestSnapshot={dashboardData.latestSnapshot}
-                previousSnapshot={dashboardData.previousSnapshot}
-                followersDiff={dashboardData.followersDiff}
-                posts={dashboardData.posts}
-              />
-            </ScrollReveal>
+          currentNavTab === 'posts' ? (
+            /* Dedicated 10 Postingan Terbaru View */
+            <div key={`posts-${selectedAccountId}`} className="space-y-6">
+              {/* Quick Summary Cards for 10 Posts */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="bg-white border-2 border-slate-900 rounded-2xl p-3.5 shadow-[3px_3px_0px_#0f172a]">
+                  <div className="text-[10px] font-black text-slate-500 uppercase">Total Views 10 Konten</div>
+                  <div className="text-xl font-black text-slate-950 font-mono mt-0.5">
+                    {formatCompactNumber(dashboardData.posts.slice(0, 10).reduce((sum, p) => sum + (p.current_play_count ?? 0), 0))}
+                  </div>
+                  <div className="text-[10px] text-amber-700 font-bold mt-0.5">Akumulasi tayangan</div>
+                </div>
 
-            {/* Middle Section: Performance Chart (2 Cols) + Radial Engagement Meter (1 Col) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <ScrollReveal direction="up" duration={650} delay={80} distance={24} className="lg:col-span-2">
-                <PerformanceChartCard
-                  snapshotsHistory={dashboardData.snapshotsHistory}
+                <div className="bg-white border-2 border-slate-900 rounded-2xl p-3.5 shadow-[3px_3px_0px_#0f172a]">
+                  <div className="text-[10px] font-black text-slate-500 uppercase">Total Likes 10 Konten</div>
+                  <div className="text-xl font-black text-rose-600 font-mono mt-0.5">
+                    {formatCompactNumber(dashboardData.posts.slice(0, 10).reduce((sum, p) => sum + (p.current_digg_count ?? 0), 0))}
+                  </div>
+                  <div className="text-[10px] text-rose-700 font-bold mt-0.5">Suka terkumpul</div>
+                </div>
+
+                <div className="bg-white border-2 border-slate-900 rounded-2xl p-3.5 shadow-[3px_3px_0px_#0f172a]">
+                  <div className="text-[10px] font-black text-slate-500 uppercase">Rata-rata Views</div>
+                  <div className="text-xl font-black text-amber-600 font-mono mt-0.5">
+                    {formatCompactNumber(
+                      dashboardData.posts.length > 0
+                        ? Math.round(dashboardData.posts.slice(0, 10).reduce((sum, p) => sum + (p.current_play_count ?? 0), 0) / Math.min(10, dashboardData.posts.length))
+                        : 0
+                    )}
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-medium mt-0.5">Per video sampel</div>
+                </div>
+
+                <div className="bg-white border-2 border-slate-900 rounded-2xl p-3.5 shadow-[3px_3px_0px_#0f172a]">
+                  <div className="text-[10px] font-black text-slate-500 uppercase">Status Pantau</div>
+                  <div className="text-sm font-black text-emerald-800 mt-1 flex items-center space-x-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>10 Konten Terkini</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 font-mono mt-0.5">@{dashboardData.account.username}</div>
+                </div>
+              </div>
+
+              {/* The 10 Posts Table / Grid */}
+              <PostsTable
+                posts={dashboardData.posts.slice(0, 10)}
+                title="10 Postingan Terakhir"
+                subtitle={`Menampilkan 10 konten publik paling baru dari @${dashboardData.account.username}`}
+              />
+            </div>
+          ) : (
+            /* Full Dashboard Overview */
+            <div key={selectedAccountId} className="space-y-6">
+              {/* 4-KPI Boltshift Metrics Row */}
+              <ScrollReveal direction="up" duration={600} distance={20}>
+                <MetricsOverview
+                  latestSnapshot={dashboardData.latestSnapshot}
+                  previousSnapshot={dashboardData.previousSnapshot}
+                  followersDiff={dashboardData.followersDiff}
                   posts={dashboardData.posts}
                 />
               </ScrollReveal>
-              <ScrollReveal direction="up" duration={650} delay={160} distance={24} className="lg:col-span-1">
-                <EngagementGaugeCard posts={dashboardData.posts} />
-              </ScrollReveal>
-            </div>
 
-            {/* Monitored Posts Data Table (Matching Boltshift 'Recent orders' style) */}
-            <PostsTable posts={dashboardData.posts} />
-          </div>
+              {/* Middle Section: Performance Chart (2 Cols) + Radial Engagement Meter (1 Col) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <ScrollReveal direction="up" duration={650} delay={80} distance={24} className="lg:col-span-2">
+                  <PerformanceChartCard
+                    snapshotsHistory={dashboardData.snapshotsHistory}
+                    posts={dashboardData.posts}
+                  />
+                </ScrollReveal>
+                <ScrollReveal direction="up" duration={650} delay={160} distance={24} className="lg:col-span-1">
+                  <EngagementGaugeCard posts={dashboardData.posts} />
+                </ScrollReveal>
+              </div>
+
+              {/* Monitored Posts Data Table */}
+              <PostsTable posts={dashboardData.posts.slice(0, 10)} />
+            </div>
+          )
         ) : null}
       </main>
 

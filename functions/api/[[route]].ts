@@ -73,7 +73,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         status: 'ok',
         scheduled_cron: '0 0 * * * (07:00 WIB)',
         target_supabase_project: 'zcphjtzdlqkjsuncvdqm',
-        accounts_count: 6,
+        accounts_count: 7,
         message: 'Endpoint sync harian aktif',
         timestamp: new Date().toISOString(),
       }, corsHeaders);
@@ -91,6 +91,43 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         clientCountry,
         receivedAt: new Date().toISOString(),
       }, corsHeaders);
+    }
+
+    // 5. GET /api/image-proxy - Proxy TikTok CDN images without referer blocks
+    if (path === '/api/image-proxy' && method === 'GET') {
+      const targetUrl = url.searchParams.get('url');
+      if (!targetUrl) {
+        return new Response('Missing url query parameter', { status: 400 });
+      }
+
+      if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        return new Response('Invalid url', { status: 400 });
+      }
+
+      try {
+        const imageRes = await fetch(targetUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'Referer': 'https://www.tiktok.com/',
+            'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+          },
+        });
+
+        if (!imageRes.ok) {
+          return new Response(`Upstream image failed: ${imageRes.status}`, { status: imageRes.status });
+        }
+
+        const contentType = imageRes.headers.get('content-type') || 'image/jpeg';
+        return new Response(imageRes.body, {
+          headers: {
+            'Content-Type': contentType,
+            'Cache-Control': 'public, max-age=604800, s-maxage=604800',
+            ...corsHeaders,
+          },
+        });
+      } catch {
+        return new Response('Failed to proxy image', { status: 502 });
+      }
     }
 
     // Fallback for API routes

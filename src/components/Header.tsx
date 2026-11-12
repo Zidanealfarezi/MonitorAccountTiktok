@@ -6,8 +6,8 @@ import { DeviceAuthService } from '../lib/deviceAuth';
 
 interface HeaderProps {
   onOpenSettings: (tab?: 'accounts' | 'usage' | 'api' | 'security') => void;
-  currentTab?: 'dashboard' | 'accounts' | 'usage';
-  onTabChange?: (tab: 'dashboard' | 'accounts' | 'usage') => void;
+  currentTab?: 'dashboard' | 'posts' | 'accounts' | 'usage';
+  onTabChange?: (tab: 'dashboard' | 'posts') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -62,29 +62,46 @@ export const Header: React.FC<HeaderProps> = ({
           <nav className="hidden md:flex items-center space-x-1 bg-amber-50/70 p-1 rounded-2xl border-2 border-slate-900 text-xs font-bold shadow-[2px_2px_0px_#0f172a]">
             <button
               onClick={() => onTabChange?.('dashboard')}
-              className={`px-4 py-1.5 rounded-xl transition-all duration-150 ${
+              className={`px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 currentTab === 'dashboard'
                   ? 'bg-slate-950 text-amber-300 shadow-xs font-black'
-                  : 'text-slate-700 hover:text-slate-950'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-white/70'
               }`}
             >
               Dashboard
             </button>
             <button
+              onClick={() => onTabChange?.('posts')}
+              className={`px-3.5 py-1.5 rounded-xl transition-all duration-150 flex items-center space-x-1.5 cursor-pointer ${
+                currentTab === 'posts'
+                  ? 'bg-slate-950 text-amber-300 shadow-xs font-black'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-white/70'
+              }`}
+            >
+              <span>Postingan Terbaru</span>
+              <span className={`px-1.5 py-0.2 rounded-md text-[10px] font-mono font-black ${
+                currentTab === 'posts'
+                  ? 'bg-[#FFC72C] text-slate-950'
+                  : 'bg-amber-100 text-slate-900 border border-slate-900/40'
+              }`}>
+                10
+              </span>
+            </button>
+            <button
               onClick={() => onOpenSettings('accounts')}
-              className="px-4 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-white/80 transition"
+              className="px-3.5 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-white/80 transition cursor-pointer"
             >
               Kelola Akun
             </button>
             <button
               onClick={() => onOpenSettings('usage')}
-              className="px-4 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-white/80 transition"
+              className="px-3.5 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-white/80 transition cursor-pointer"
             >
               Biaya & Kuota
             </button>
             <button
               onClick={() => onOpenSettings('security')}
-              className="px-4 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-white/80 transition"
+              className="px-3.5 py-1.5 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-white/80 transition cursor-pointer"
             >
               Perangkat
             </button>
