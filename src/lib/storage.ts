@@ -64,9 +64,8 @@ const PREFERRED_ACCOUNT_ORDER: Record<string, number> = {
   'the.ai.x.academy': 2,
   'aqara.indonesia': 3,
   'dinda.kemala_': 4,
-  'rania.meutia': 5,
-  'nara.adelia_': 6,
-  'teuku.rayyan00': 7,
+  'pakvincent.riau': 5,
+  'teuku.rayyan00': 6,
 };
 
 export const sortAccounts = (accounts: Account[]): Account[] => {
@@ -99,7 +98,34 @@ export class StorageService {
 
   // Initialize seed data if storage is empty, or update if posts are missing
   public static init(): void {
-    const existingAccounts = this.getItem<Account[]>(STORAGE_KEYS.ACCOUNTS, []);
+    const DEPRECATED_USERNAMES = ['rania.meutia', 'nara.adelia_'];
+    let existingAccounts = this.getItem<Account[]>(STORAGE_KEYS.ACCOUNTS, []);
+
+    // Purge deprecated accounts from localStorage if still present
+    const hasDeprecated = existingAccounts.some((acc) =>
+      DEPRECATED_USERNAMES.includes(acc.username)
+    );
+    if (hasDeprecated) {
+      const deprecatedIds = new Set(
+        existingAccounts
+          .filter((acc) => DEPRECATED_USERNAMES.includes(acc.username))
+          .map((acc) => acc.id)
+      );
+
+      existingAccounts = existingAccounts.filter(
+        (acc) => !DEPRECATED_USERNAMES.includes(acc.username)
+      );
+      this.setItem(STORAGE_KEYS.ACCOUNTS, existingAccounts);
+
+      let currentSnapshots = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+      currentSnapshots = currentSnapshots.filter((s) => !deprecatedIds.has(s.account_id));
+      this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, currentSnapshots);
+
+      let currentPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
+      currentPosts = currentPosts.filter((p) => !deprecatedIds.has(p.account_id));
+      this.setItem(STORAGE_KEYS.POSTS, currentPosts);
+    }
+
     const existingPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
 
     if (existingAccounts.length === 0 || existingPosts.length < 20) {
@@ -117,6 +143,27 @@ export class StorageService {
 
       if (missingAccounts.length > 0) {
         this.setItem(STORAGE_KEYS.ACCOUNTS, [...existingAccounts, ...missingAccounts]);
+
+        // Inject initial seed snapshots and posts for newly added accounts if not present
+        const missingAccountIds = new Set(missingAccounts.map((a) => a.id));
+        let currentSnapshots = this.getItem<AccountSnapshot[]>(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, []);
+        const newSnapshots = ALL_ACCOUNT_SNAPSHOTS.filter((s) => missingAccountIds.has(s.account_id));
+        if (newSnapshots.length > 0) {
+          this.setItem(STORAGE_KEYS.ACCOUNT_SNAPSHOTS, [...currentSnapshots, ...newSnapshots]);
+        }
+
+        let currentPosts = this.getItem<Post[]>(STORAGE_KEYS.POSTS, []);
+        const newPosts = ALL_SEEDED_POSTS.filter((p) => missingAccountIds.has(p.account_id));
+        if (newPosts.length > 0) {
+          this.setItem(STORAGE_KEYS.POSTS, [...currentPosts, ...newPosts]);
+        }
+
+        let currentPostSnapshots = this.getItem<PostSnapshot[]>(STORAGE_KEYS.POST_SNAPSHOTS, []);
+        const newPostIds = new Set(newPosts.map((p) => p.id));
+        const newPostSnapshots = ALL_SEEDED_POST_SNAPSHOTS.filter((ps) => newPostIds.has(ps.post_id));
+        if (newPostSnapshots.length > 0) {
+          this.setItem(STORAGE_KEYS.POST_SNAPSHOTS, [...currentPostSnapshots, ...newPostSnapshots]);
+        }
       }
     }
 

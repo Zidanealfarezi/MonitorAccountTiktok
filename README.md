@@ -6,14 +6,13 @@ Website monitoring akun TikTok publik menggunakan **React + TypeScript**, **Clou
 
 ## 🚀 Fitur Utama
 
-1. **Pemantauan 7 Akun Awal (Dapat Diatur):**
+1. **Pemantauan Akun Utama (Dapat Diatur):**
    - Intan Suar Kartika (`@intansuarkartika`)
    - The AI X Academy (`@the.ai.x.academy`)
    - Aqara Indonesia (`@aqara.indonesia`)
    - Dinda Kemala (`@dinda.kemala_`)
-   - Rania Meutia (`@rania.meutia`)
-   - Nara Adelia (`@nara.adelia_`)
-   - Bang Ray (`@teuku.rayyan00`) — *akun baru / empty state awal sebelum publikasi perdana*
+   - Pak Vincent (`@pakvincent.riau`)
+   - Bang Ray (`@teuku.rayyan00`)
 
 2. **Ringkasan Profil:**
    - **Followers**: Jumlah pengikut + pertambahan/penurunan dibandingkan pengamatan sebelumnya (dengan label rentang waktu observasi nyata).

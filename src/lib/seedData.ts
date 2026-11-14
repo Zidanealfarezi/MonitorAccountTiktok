@@ -46,26 +46,15 @@ export const INITIAL_ACCOUNTS: Account[] = [
     updated_at: '2026-11-03T01:15:00Z',
   },
   {
-    id: 'a2222222-2222-2222-2222-222222222222',
-    username: 'rania.meutia',
-    display_name: 'Rania Meutia',
-    tiktok_id: '7283948571928374652',
-    avatar_url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&auto=format&fit=crop&q=80',
+    id: 'a8888888-8888-8888-8888-888888888888',
+    username: 'pakvincent.riau',
+    display_name: 'Pak Vincent',
+    tiktok_id: '7829104928172635190',
+    avatar_url: '/avatars/pakvincent.jpg',
     status: 'active',
-    last_sync_at: '2026-11-02T14:30:00Z', // 21:30 WIB
-    created_at: '2026-10-20T00:00:00Z',
-    updated_at: '2026-11-02T14:30:00Z',
-  },
-  {
-    id: 'a3333333-3333-3333-3333-333333333333',
-    username: 'nara.adelia_',
-    display_name: 'Nara Adelia',
-    tiktok_id: '7394857281920394857',
-    avatar_url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&auto=format&fit=crop&q=80',
-    status: 'active',
-    last_sync_at: '2026-11-02T03:15:00Z', // 10:15 WIB
-    created_at: '2026-10-20T00:00:00Z',
-    updated_at: '2026-11-02T03:15:00Z',
+    last_sync_at: '2026-11-13T10:00:00Z',
+    created_at: '2026-11-11T00:00:00Z',
+    updated_at: '2026-11-13T10:00:00Z',
   },
   {
     id: 'a7777777-7777-7777-7777-777777777777',
@@ -85,8 +74,8 @@ export const isSeedSnapshot = (snapshot: AccountSnapshot): boolean => {
   if (!snapshot) return false;
   const id = snapshot.id || '';
   const jobId = snapshot.sync_job_id || '';
-  return /^(snap-(intan|rania|nara|dinda|aqara|ai)-)/.test(id) ||
-    /^(job-(intan|rania|nara|dinda|aqara|ai)-)/.test(jobId);
+  return /^(snap-(intan|dinda|aqara|ai|vincent|rania|nara)-)/.test(id) ||
+    /^(job-(intan|dinda|aqara|ai|vincent|rania|nara)-)/.test(jobId);
 };
 
 // Profile Snapshots for all 6 accounts
@@ -138,44 +127,24 @@ export const ALL_ACCOUNT_SNAPSHOTS: AccountSnapshot[] = [
     captured_at: '2026-11-03T01:45:00Z',
   },
 
-  // 2. Rania Meutia
+  // 2. Pak Vincent (@pakvincent.riau)
   {
-    id: 'snap-rania-1',
-    account_id: 'a2222222-2222-2222-2222-222222222222',
-    sync_job_id: 'job-rania-1',
-    fans: 25,
-    heart: 320,
-    video_count: 24,
-    captured_at: '2026-10-29T03:00:00Z',
+    id: 'snap-vincent-1',
+    account_id: 'a8888888-8888-8888-8888-888888888888',
+    sync_job_id: 'job-vincent-1',
+    fans: 48,
+    heart: 580,
+    video_count: 12,
+    captured_at: '2026-11-11T08:00:00Z',
   },
   {
-    id: 'snap-rania-2',
-    account_id: 'a2222222-2222-2222-2222-222222222222',
-    sync_job_id: 'job-rania-2',
-    fans: 26,
-    heart: 350,
-    video_count: 24,
-    captured_at: '2026-11-02T14:30:00Z',
-  },
-
-  // 3. Nara Adelia
-  {
-    id: 'snap-nara-1',
-    account_id: 'a3333333-3333-3333-3333-333333333333',
-    sync_job_id: 'job-nara-1',
-    fans: 30,
-    heart: 410,
-    video_count: 18,
-    captured_at: '2026-10-31T03:00:00Z',
-  },
-  {
-    id: 'snap-nara-2',
-    account_id: 'a3333333-3333-3333-3333-333333333333',
-    sync_job_id: 'job-nara-2',
-    fans: 31,
-    heart: 425,
-    video_count: 18,
-    captured_at: '2026-11-02T03:15:00Z',
+    id: 'snap-vincent-2',
+    account_id: 'a8888888-8888-8888-8888-888888888888',
+    sync_job_id: 'job-vincent-2',
+    fans: 52,
+    heart: 630,
+    video_count: 12,
+    captured_at: '2026-11-13T10:00:00Z',
   },
 
   // 4. Dinda Kemala
@@ -324,43 +293,23 @@ const INTAN_DATA = generateAccountPosts(
   ]
 );
 
-// 2. Rania Captions
-const RANIA_DATA = generateAccountPosts(
-  'a2222222-2222-2222-2222-222222222222',
-  'rania.meutia',
-  '728394',
-  210000,
+// 2. Pak Vincent Captions
+const VINCENT_DATA = generateAccountPosts(
+  'a8888888-8888-8888-8888-888888888888',
+  'pakvincent.riau',
+  '782910',
+  280000,
   [
-    { text: 'Mix & match blazer oversize buat ngantor vs hangout 💼 #OOTD #hijabstyle', isSlideshow: false },
-    { text: '5 Outfit ideas warna earth tone buat weekend getaway 🍂', isSlideshow: true },
-    { text: 'Review honest tas lokal brand yang muat banyak & tahan air ✨', isSlideshow: false },
-    { text: 'Tips styling celana kulot biar kelihatan lebih jenjang 📏', isSlideshow: true },
-    { text: 'Get ready with me: attending Jakarta Fashion Week 👠', isSlideshow: false },
-    { text: 'Rekomendasi sepatu loafers ternyaman buat jalan seharian 👞', isSlideshow: true },
-    { text: 'Unboxing haul modest wear edisi musim hujan 🌧️', isSlideshow: false },
-    { text: 'Capsule wardrobe 101: 7 item baju untuk 14 looks berbeda 👗', isSlideshow: true },
-    { text: 'A day in my life: fitting baju bareng stylist & photoshoot 📸', isSlideshow: false },
-    { text: 'Q&A tips pilih tone warna hijab yang bikin wajah cerah 🧕', isSlideshow: false },
-  ]
-);
-
-// 3. Nara Captions
-const NARA_DATA = generateAccountPosts(
-  'a3333333-3333-3333-3333-333333333333',
-  'nara.adelia_',
-  '739485',
-  160000,
-  [
-    { text: 'Step by step double cleansing yang bener biar pori-pori bersih tuntas 🫧 #skincare', isSlideshow: false },
-    { text: 'Perbedaan physical vs chemical sunscreen: mana yang cocok buat kamu? ☀️', isSlideshow: true },
-    { text: 'Kandungan skincare yang gaboleh di-layer bersamaan! Catat ya ⚠️', isSlideshow: true },
-    { text: 'Review cushion viral dengan satin finish: tahan 8 jam tanpa touch-up? 🤔', isSlideshow: false },
-    { text: 'Morning routine mengatasi kulit kemerahan dan skin barrier rusak 🌿', isSlideshow: false },
-    { text: 'Swatches 6 shade liptint lokal paling flattering di undertone warm 💄', isSlideshow: true },
-    { text: 'Tips eksfoliasi untuk pemula tanpa bikin kulit iritasi / purging 🧖‍♀️', isSlideshow: false },
-    { text: 'Battle eye cream penghilang mata panda: hasilnya setelah 2 minggu 👁️', isSlideshow: true },
-    { text: 'Skincare empties bulan ini: mana yang bakal repurchase? 🗑️', isSlideshow: false },
-    { text: 'Budget skincare routine di bawah 200 ribu untuk pelajar/mahasiswa 💸', isSlideshow: false },
+    { text: 'Jalan poros kebun sawit sehabis hujan lebat di Riau: motor langsir muat 400 kg tanpa slip di tanah merah. Tetap semangat kawan-kawan #sawitriau #kebunsawit', isSlideshow: false },
+    { text: 'Semangat pagi kawan-kawan di kebun. Sebelum melangsir TBS jangan lupa isi tenaga dulu biar badan tetap bugar #pekanbaru #petanisawit', isSlideshow: false },
+    { text: 'Perbedaan teknik dodos vs egrek untuk panen sawit pokok tinggi: keselamatan kerja nomor satu di lapangan #sawitindonesia', isSlideshow: true },
+    { text: 'Kopi kebun dan bekal rantang siang ini di bawah rindangnya pelepah sawit. Nikmatnya hidup bersahaja kawan-kawan #kebunkelapasawit', isSlideshow: false },
+    { text: 'Tips rawat pohon sawit dan takaran pupuk saat musim trek biar buah pasir ga rontok #tipsperkebunan', isSlideshow: true },
+    { text: 'Dinamika sortir buah di PKS dan timbangan RAM sawit: potongan tangkai panjang harus diperhatikan kawan-kawan #pabriksawit', isSlideshow: false },
+    { text: 'Nostalgia deres getah karet subuh vs ladang kelapa sawit: perbandingan perawatan dan hasil panen harian #petaniindonesia', isSlideshow: true },
+    { text: 'Modifikasi gear dan rantai motor langsir beban berat buat nanjak bukit tanah merah tanpa oleng #motorlangsir', isSlideshow: false },
+    { text: 'Cara cek kematangan tandan buah segar (TBS) sawit yang pas sebelum dipanen agar rendemen minyak tinggi #panensawit', isSlideshow: true },
+    { text: 'Salam dua jari dari bumi Lancang Kuning Riau untuk seluruh kawan-kawan pekerja dan petani sawit di Nusantara #riau #sawit', isSlideshow: false },
   ]
 );
 
@@ -427,8 +376,7 @@ const AI_DATA = generateAccountPosts(
 // Combine all posts and snapshots
 export const ALL_SEEDED_POSTS: Post[] = [
   ...INTAN_DATA.posts,
-  ...RANIA_DATA.posts,
-  ...NARA_DATA.posts,
+  ...VINCENT_DATA.posts,
   ...DINDA_DATA.posts,
   ...AQARA_DATA.posts,
   ...AI_DATA.posts,
@@ -436,8 +384,7 @@ export const ALL_SEEDED_POSTS: Post[] = [
 
 export const ALL_SEEDED_POST_SNAPSHOTS: PostSnapshot[] = [
   ...INTAN_DATA.snapshots,
-  ...RANIA_DATA.snapshots,
-  ...NARA_DATA.snapshots,
+  ...VINCENT_DATA.snapshots,
   ...DINDA_DATA.snapshots,
   ...AQARA_DATA.snapshots,
   ...AI_DATA.snapshots,
@@ -458,16 +405,16 @@ export const INITIAL_JOBS: SyncJob[] = [
     created_at: '2026-11-03T01:44:15Z',
   },
   {
-    id: 'job-rania-2',
-    account_id: 'a2222222-2222-2222-2222-222222222222',
-    apify_run_id: 'run-apify-rania-02',
-    apify_dataset_id: 'ds-apify-rania-02',
+    id: 'job-vincent-1',
+    account_id: 'a8888888-8888-8888-8888-888888888888',
+    apify_run_id: 'run-apify-vincent-01',
+    apify_dataset_id: 'ds-apify-vincent-01',
     status: 'succeeded',
-    started_at: '2026-11-02T14:29:10Z',
-    completed_at: '2026-11-02T14:30:00Z',
+    started_at: '2026-11-13T09:59:10Z',
+    completed_at: '2026-11-13T10:00:00Z',
     results_count: 10,
-    charged_usd: 0.032,
-    created_at: '2026-11-02T14:29:10Z',
+    charged_usd: 0.031,
+    created_at: '2026-11-13T09:59:10Z',
   },
   {
     id: 'job-aqara-2',
@@ -498,14 +445,14 @@ export const INITIAL_USAGE: UsageLedgerEntry[] = [
   },
   {
     id: 'use-02',
-    account_id: 'a2222222-2222-2222-2222-222222222222',
-    account_username: 'rania.meutia',
-    sync_job_id: 'job-rania-2',
+    account_id: 'a8888888-8888-8888-8888-888888888888',
+    account_username: 'pakvincent.riau',
+    sync_job_id: 'job-vincent-1',
     billing_cycle: '2026-11',
     reserved_usd: 0.05,
-    final_charged_usd: 0.032,
+    final_charged_usd: 0.031,
     status: 'finalized',
-    created_at: '2026-11-02T14:30:00Z',
+    created_at: '2026-11-13T10:00:00Z',
   },
   {
     id: 'use-03',
